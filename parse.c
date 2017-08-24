@@ -35,16 +35,18 @@ static void parse_format_1(int ac, char **av, CmdToAdd *cmd) {
   msg("YYYY-MM-DD: %4.4d-%2.2d-%2.2d", year, month, day);
 
   /* AV[2] (maybe [3] too): Grab the HH:MM:SS or HH:MM:SS +/-OFFSET] */
+  cmd_index = 3;  /* Assume no offset */
   check_ac(ac, 3);
   if (sscanf(av[2], "%2d:%2d:%2d%c", &hour, &min, &sec, &ch1) >= 3 &&
       ch1 == ']') {
     msg("HH:MM:SS: %2.2d:%2.2d:%2.2d, no offset", hour, min, sec);
-    cmd_index = 3;
   } else {
     if (sscanf(av[2], "%2d:%2d:%2d", &hour, &min, &sec) < 3)
       error("expected HH:MM:DD or HH:MM:DD], got %s", av[2]);
     msg("HH:MM:SS: %2.2d:%2.2d:%2.2d", hour, min, sec);
     check_ac(ac, 4);
+    
+    /* Expect the offset now as +HHMM or -HHMM. */
     if (sscanf(av[3], "%c%d%c", &ch1, &offset, &ch2) >= 3 &&
         ch1 == '+' && ch2 == ']') {
       msg("offset: +%d", offset);
