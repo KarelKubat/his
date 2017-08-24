@@ -14,12 +14,12 @@ Available formats are identified by a number. Available are:
 
 --format=2:
   Selects the format that is also used during --export: a date/time and the
-  command. The date/time are assumed to be GMT. Example:
+  command. The date/time are assumed to be UTC. Example:
     2017-08-15/05:33:47 cat /tmp/myfile.c
 
 --format=3:
   Selects a format where a Unix timestamp (seconds since 1970-01-01, UTC) is
-  followed by any arguments. This is handy when you can get a $(time +%s) in.
+  followed by any arguments. This is handy when you can get a $(time +%%s) in.
   Example:
     1503505272 find /var/log -type f -name apache*
 

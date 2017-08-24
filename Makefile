@@ -23,11 +23,11 @@ his: $(OBJ)
 
 # How to generate .h from text files
 usagetxt.h: usagetxt.txt Makefile
-	sh txt2h.sh $< $@ USAGETEXT
+	perl txt2h.pl $< $@ USAGETEXT
 formatstxt.h: formatstxt.txt
-	sh txt2h.sh $< $@ FORMATSTEXT
+	perl txt2h.pl $< $@ FORMATSTEXT
 createtablestxt.h: createtablestxt.txt
-	sh txt2h.sh $< $@ CREATETABLESTEXT
+	perl txt2h.pl $< $@ CREATETABLESTEXT
 
 # Clean up
 clean:

@@ -1,7 +1,7 @@
 #include "his.h"
 
 /* Standard mktime() thinks that assuming localtime is a good idea.
-   We want real GMT.
+   We want real UTC.
    Shameless rip from http://www.catb.org/esr/time-programming/ */
 time_t gm_mktime(register struct tm *t) {
   register long year;
