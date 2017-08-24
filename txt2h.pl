@@ -21,6 +21,8 @@ TOP
 
 while (my $line = <$if>) {
   chomp($line);
+  $line =~ s{"}{\\"}g;
+  $line =~ s{'}{\\'}g;
   print $of ('    ', '"', $line, "\\n", '"', "\\", "\n");
 }
 print $of ('    ', "\"\\n\"", "\n");

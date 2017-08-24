@@ -1,6 +1,6 @@
 #include "his.h"
 
-void export() {
+void export_cmds() {
   char *sql, *extra;
   sqlite3_stmt *cmd_stmt;
 

@@ -1,5 +1,9 @@
 # Makefile for his
 
+# Where does a default 'make install' put the binary.
+# Alternatively use: BINDIR=/what/ever make install
+BINDIR = $$HOME/bin
+
 VER = '1.00'
 AUTHOR = 'Karel Kubat <karel@kubat.nl>'
 YEARS = '2017ff'
@@ -9,7 +13,15 @@ SRC = $(wildcard *.c)
 OBJ = $(SRC:.c=.o)
 
 # Top level target, creates the binary 'his' in current directory
-foo: usagetxt.h his
+local: usagetxt.h his
+	@echo
+	@echo 'Type "make install" if you want to install his.'
+	@echo 'Type "BINDIR=/what/ever make install" to change the path.'
+
+install: local
+	install -s his $(BINDIR)
+	@echo
+	@echo 'Installation successful, $(BINDIR)/his can be used'
 
 # Linking the objects
 his: $(OBJ)

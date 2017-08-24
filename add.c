@@ -6,8 +6,23 @@ void add(int ac, char **av) {
   char *sql, *str_stamp;
   time_t found_timestamp;
   int next_cmd_id, i, args_id;
+  Args args;
 
-  parse(ac, av, &cmd);
+  /* In multiargs mode, we want at least some form of a timestamp and
+     a command. In singleargs mode, we want exactly one arg. */
+  if (!multiargs) {
+    /* Split by spaces if --multi-args is given. */
+    if (ac != 1)
+      error("--add (without --multi-args) needs exactly 1 argument");
+    str2args(av[0], &args);
+    parse(args.argc, args.argv, &cmd);
+  } else {
+    /* ac,av must be good */
+    if (ac < 2)
+      error("--add --multi-args needs at least 2 arguments, some timestamp "
+            "and a cmd");
+    parse(ac, av, &cmd);
+  }
 
   /* If we already know a db entry with the same timestamp and the
      same hash, then this is a repetition and we don't need to add
