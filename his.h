@@ -33,12 +33,13 @@ typedef struct {
 #define MAX_FORMAT     3
 
 /* Data declarations or definitions */
-#ifdef DECLARE_DATA
+#ifdef DEFINE_DATA
 #  define EXTERN
 #else
 #  define EXTERN extern
 #endif
-EXTERN int count;              /* --count number */
+EXTERN int accept_his;         /* Also add cmds that start with 'his' */
+EXTERN int count;              /* Number of entries during recent listing */
 EXTERN char *db;               /* Database name */
 EXTERN sqlite3 *dbconn;        /* Database connection */
 EXTERN time_t first_timestamp; /* First timestamps when searching/dumping */

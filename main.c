@@ -1,4 +1,6 @@
-#define DECLARE_DATA
+/* DECLARE_DATA makes his.h define, not just declare variables that
+   are marked EXTERN */
+#define DEFINE_DATA
 
 #include "his.h"
 
@@ -26,10 +28,11 @@ int main(int argc, char **argv) {
     db = xstrcat(db, "/.his.db");
   }
   format = DEFAULT_FORMAT;
-  count = 1;
+  count = 20;
 
   /* Supported flags */
   struct option flags[] = {
+    { "accept-his",   0, 0, 'A' },
     { "add",          0, 0, 'a' },
     { "db",           1, 0, 'd' },
     { "count",        1, 0, 'c' },
@@ -45,7 +48,7 @@ int main(int argc, char **argv) {
     { "help",         0, 0, 'h' },
     { 0,              0, 0,  0  },
   };
-  while ( (opt = getopt_long(argc, argv, "ac:d:ef:F:ilLmrvh?",
+  while ( (opt = getopt_long(argc, argv, "aAc:d:ef:F:ilLmrvh?",
                              flags, 0)) > 0 ) {
     switch (opt) {
 
@@ -53,6 +56,11 @@ int main(int argc, char **argv) {
         /* Add cmd to history */
         action = ADD;
         break;
+
+      case 'A':
+	/* Store cmds that start with 'his' */
+	accept_his++;
+	break;
 
       case 'c':
         /* Set count for --most-recent */
@@ -140,7 +148,6 @@ int main(int argc, char **argv) {
     error("failed to determine sqlite3 db path from $HOME or flag --db");
   msg("sqlite3 db is %s", db);
   sqlinit();
-  db_cleanup();
 
   /* Act. */
   switch (action) {
@@ -170,5 +177,7 @@ int main(int argc, char **argv) {
       break;
   }
 
+  db_cleanup();
+  
   return 0;
 }

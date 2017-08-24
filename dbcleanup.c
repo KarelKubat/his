@@ -17,6 +17,8 @@ void db_cleanup() {
      first place, but hey. There's crashes and stuff.
      But no bugs. No bugs at all. */
 
+  msg("starting db cleanup");
+      
   /* Any cmd_id may only be in the db when it's in both the CMD and in
      the CROSSREF tables. */
   run_cleanup("SELECT cmd_id FROM cmd "

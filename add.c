@@ -24,6 +24,12 @@ void add(int ac, char **av) {
     parse(ac, av, &cmd);
   }
 
+  /* Ignore cmds that start with 'his' unless specified by --accept-his */
+  if (!accept_his && !strcmp(cmd.av[0], "his")) {
+      msg("command to add starts with 'his', not storing");
+      return;
+  }
+  
   /* If we already know a db entry with the same timestamp and the
      same hash, then this is a repetition and we don't need to add
      anything.
