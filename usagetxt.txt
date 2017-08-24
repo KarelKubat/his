@@ -1,0 +1,27 @@
+Welcome to his %s, a CLI history tracker and finder of old invocations.
+Copyright (c) %s. %s. Distributed under GNU GPLV3.
+See %s for more info. Use his as follows:
+
+his [--flags] ARGS
+  Displays history having ARGS. Use what to exactly match, or what%% to
+  match anything starting with what, or %%what for anything ending in what,
+  or __at for anything that is 4 characters long and ends with at. Use
+  flags --first=FROM and --last=TO if you want to time-limit.
+
+his [--flags] -a,--add ARGS
+  Adds ARGS to the history, see --list-formats for the supported parsing
+  formats and --format=X to select a format.
+
+his [--flags] -e,--export
+  Shows a list of historical entries. Flags --first=FROM and --last=TO may
+  be helpful.
+
+Supported general flags:
+  -d,--db=DB        : Sets Sqlite3 database path, default is $HOME/.his.db
+  -f,--first=STAMP  : Limits exports and searches to later or equal to STAMP,
+                      with STAMP having the format: YYYY-MM-DD/HH:MM:SS
+  -F,--format=FMT   : Sets the format for parsing during --add
+  -l,--last=STAMP   : Limits exports and searches to earlier or equal to STAMP
+  -L,--list-formats : Shows available parsing formats and stops
+  -v,--verbose      : Increases verbosity
+  -h,-?,--help      : Shows this text and stops

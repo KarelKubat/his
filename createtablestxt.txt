@@ -1,0 +1,20 @@
+CREATE TABLE cmd (
+    cmd_id    INTEGER NOT NULL,
+    hash      INTEGER NOT NULL,
+    timestamp INTEGER NOT NULL,
+    UNIQUE(cmd_id, hash, timestamp)
+);
+
+CREATE TABLE args (
+    args_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    arg     TEXT NOT NULL UNIQUE
+);
+CREATE INDEX args_index ON args(arg);
+
+CREATE TABLE crossref (
+    cmd_id   INTEGER,
+    args_id  INTEGER,
+    position INTEGER NOT NULL,
+    FOREIGN  KEY(cmd_id)  REFERENCES cmd(cmd_id),
+    FOREIGN  KEY(args_id) REFERENCES args(args_id)
+);
