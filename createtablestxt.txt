@@ -1,7 +1,7 @@
 CREATE TABLE cmd (
     cmd_id    INTEGER NOT NULL,
-    hash      INTEGER NOT NULL,
-    timestamp INTEGER NOT NULL
+    timestamp INTEGER NOT NULL,
+    hash      INTEGER NOT NULL
 );
 
 CREATE TABLE args (

@@ -83,7 +83,7 @@ General Usage
         his -ec0 | ssh user@remotesystem his -i
     (Remember that for a full export, you want --count=0 or -c0, since the
     arbitrary default is 20.)
-    
+
     Or, you can ask the 'remote side' what its most recent timestamp is, and
     export only from that point on:
     	TIMESTAMP=$(ssh user@remotesystem his -ec1 | awk '{print $1}')
@@ -91,7 +91,7 @@ General Usage
     Here, flag -c1 means --count=1, which is: list only the one most recent
     command.
 
- Making --add work automatically
+Making --add work automatically
 -------------------------------
 
   Bash
@@ -116,3 +116,51 @@ General Usage
 
     Et voila, your commands are saved into a sqlite database called
     $HOME/.his.db.
+
+Data model and storage
+----------------------
+
+    his tries to be smart about storing invocations, their arguments, and their
+    timestamps. There are three tables. You can inspect everything if you have
+    the CLI 'sqlite3' and when you run 'sqlite3 ~/.his.db' (assuming that you
+    are not overruling the default by having your own -d MYDB flag).
+
+    If you want to see what tables are created and exactly how, see file
+    createtables.txt in the source archive.
+
+    Here's a functional description of the tables:
+
+    1. Table CMD: What command was entered when?
+       - Column CMD_ID: an integer that is used to index table CROSSREF. It is
+         not unique; it may occur multiple times when the same command occurs
+         under different timestamps.
+       - Column TIMESTAMP: The timestamp at which this command occurred. If an
+         identical command is entered at a new timestamp (e.g. say you run "ls
+	 -l" at different times), then the same CMD_ID is used, but with a
+	 different TIMESTAMP.
+       - Column HASH: A hash computed over the full entered commmand, used to
+         identify previously stored commands so that de-duplication can be
+         applied.
+
+    2. Table ARGS: What args do we know?
+       - Column ARGS_ID: the auto-incremented ID of the row.
+       - Column ARG: one argument. E.g. a command 'ls -ltr /tmp' will cause 3
+         entries in ARGS: 'ls', '-ltr', and '/tmp'.
+
+    3. Table CROSSREF: binding the two together
+       This table links CMD entries to ARGS entries to make the picture
+       complete.
+       - Column CMD_ID:   references an entry in CMD, e.g. answering 'when was
+       	 this entered'.
+       - Column ARGS_ID:  references an argument in the stored command.
+       - Column POSITION: says which ARG_ID comes first, which comes second,
+         etc.
+       The whole idea of CROSSREF is to deduplicate ARGS. E.g., consider the
+       three commands:
+         ls -l /tmp
+	 ls -ltr
+	 ls /tmp
+       have only four distinct strings: "ls", "-l", "/tmp", and "-ltr". The
+       tables and their contents will in this case have 3 CMD rows. but only 4
+       ARGS rows. The crosstable CROSSREF defines which ARG-strings are bound
+       to any CMD and in which order.

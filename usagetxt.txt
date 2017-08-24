@@ -3,23 +3,27 @@ Copyright (c) %s. %s. Distributed under GNU GPLV3.
 See %s for more info. Use his as follows:
 
 his [--flags] ARGS
-  Displays history having ARGS. Use what to exactly match, or what%% to
-  match anything starting with what, or %%what for anything ending in what,
-  or __at for anything that is 4 characters long and ends with at. Use
-  flags --first=FROM and --last=TO if you want to time-limit.
+  Displays history having ARGS. Use 'what' to exactly match, or 'what%%' to
+  match anything starting with what, or '%%what' for anything ending in what,
+  or '%%what%%' for whatever has what in it, or '__at' for anything that is 4
+  characters long and ends with at. Use flags --first=FROM and --last=TO if you
+  want to time-limit.
 
 his [--flags] -a,--add LINE
   Adds LINE to the history, see --list-formats for the supported parsing
   formats and --format=X to select a format.
 
 his [--flags] -e,--export
-  Shows a list of historical entries. Flags --first=FROM and --last=TO may
-  be helpful.
+  Shows a list of the last 20 historical entries. Flags --first=FROM and
+  --last=TO may be helpful. Or --count=MAX to show more or less than 20.
 
 his [--flags] -i,--import
   Import a list in the same format as his --export produces. Flags --first=FROM
   and --last=TO can be used to limit the imported entries. Implies --format=2
   and no --multi-args.
+
+his -R
+  Shows the README and stops.
 
 Supported general flags:
   -d,--db=DB        : Sets Sqlite3 database path, default is $HOME/.his.db

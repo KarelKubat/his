@@ -35,11 +35,13 @@ his: $(OBJ)
 
 # How to generate .h from text files
 usagetxt.h: usagetxt.txt Makefile
-	perl txt2h.pl $< $@ USAGETEXT
+	perl txt2h.pl $< $@ USAGETEXT 0
 formatstxt.h: formatstxt.txt
-	perl txt2h.pl $< $@ FORMATSTEXT
+	perl txt2h.pl $< $@ FORMATSTEXT 0
 createtablestxt.h: createtablestxt.txt
-	perl txt2h.pl $< $@ CREATETABLESTEXT
+	perl txt2h.pl $< $@ CREATETABLESTEXT 0
+readmetxt.h: README.txt
+	perl txt2h.pl $< $@ READMETEXT 1
 
 # Clean up
 clean:
@@ -50,3 +52,4 @@ main.o: main.c his.h
 usage.o: usage.c usagetxt.h
 listformats.o: listformats.c formatstxt.h
 sqlinit.o: sqlrun.c createtablestxt.h
+readme.o: readme.c readmetxt.h

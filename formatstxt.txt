@@ -7,12 +7,12 @@ Available formats are identified by a number. Available are:
     2087  [2017-08-22 13:57:32 +0200] ls -ltr /tmp
   This is the format for the bash expression '$(history 1)' once you
   set
-    export HISTTIMEFORMAT="[%Y-%m-%d %H:%M:%S %z] "
+    export HISTTIMEFORMAT="[%%Y-%%m-%%d %%H:%%M:%%S %%z] "
   which is recommended -- it makes your Bash builtin command 'history' behave
   much nicer and his will understand it by default.
   
   The leading number (2087) is a byproduct of bash and is unused. The datestamp
-  is spread out over two or three strings and must follow the syntax (including
+  is spread out over two or three parts and must follow the syntax (including
   the shown square brackets):
     [YYYY-MM-DD HH:MM:SS]         (this is assumed UTC) or
     [YYYY-MM-DD HH:MM:SS +/-HHMM] (this is assumed localtime, with offset to

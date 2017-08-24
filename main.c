@@ -42,13 +42,13 @@ int main(int argc, char **argv) {
     { "import",       0, 0, 'i' },
     { "last",         1, 0, 'l' },
     { "list-formats", 0, 0, 'L' },
-    { "most-recent",  0, 0, 'r' },
     { "multi-args",   0, 0, 'm' },
+    { "readme",       0, 0, 'R' },
     { "verbose",      0, 0, 'v' },
     { "help",         0, 0, 'h' },
     { 0,              0, 0,  0  },
   };
-  while ( (opt = getopt_long(argc, argv, "aAc:d:ef:F:ilLmrvh?",
+  while ( (opt = getopt_long(argc, argv, "aAc:d:ef:F:ilLmRvh?",
                              flags, 0)) > 0 ) {
     switch (opt) {
 
@@ -66,8 +66,8 @@ int main(int argc, char **argv) {
         /* Set count for --most-recent */
         if (!optarg || !*optarg)
           error("missing --count value");
-        if ( (count = atoi(optarg)) < 1 )
-          error("bad --count value, must be a positive number");
+        if ( (count = atoi(optarg)) < 0 )
+          error("bad --count value, must be a non-negative number");
         break;
 
       case 'd':
@@ -124,10 +124,10 @@ int main(int argc, char **argv) {
         multiargs++;
         break;
 
-      case 'r':
-        /* List most recent entry and stop. */
-        action = MOSTRECENT;
-        break;
+      case 'R':
+	/* Show readme and stop */
+        readme();
+	break;
 
       case 'v':
         /* Enable verbose mode */
@@ -171,9 +171,6 @@ int main(int argc, char **argv) {
         error("no arguments expected after --import");\
       format = 2;
       import_cmds();
-      break;
-    case MOSTRECENT:
-      list_most_recent();
       break;
   }
 
