@@ -5,22 +5,17 @@
 #include "his.h"
 
 typedef enum {
-  FIND,       /* Selected when no flag like --add, --export is given */
+  LIST,       /* Selected when no flag like --add, --export is given */
   ADD,        /* Selected when --add is seen */
-  EXPORT,     /* Selected when --export is seen */
   IMPORT,     /* Selected when --import is seen */
-  MOSTRECENT, /* Selected when --most-recent is seen */
+  PURGE,      /* Selected when --purge is seen */
 } Action;
 
 int main(int argc, char **argv) {
 
   int opt;
   char *home;
-  Action action = FIND;
-
-  /* No args at all? */
-  if (argc == 1)
-    usage();
+  Action action = LIST;
 
   /* Initialize globals */
   if ( (home = getenv("HOME")) ) {
@@ -28,7 +23,9 @@ int main(int argc, char **argv) {
     db = xstrcat(db, "/.his.db");
   }
   format = DEFAULT_FORMAT;
-  count = 20;
+  /* A negative count means: not initialized. It is overruled in
+     list_cmds() unless it's set by a flag. */
+  count = -1;
 
   /* Supported flags */
   struct option flags[] = {
@@ -36,19 +33,19 @@ int main(int argc, char **argv) {
     { "add",          0, 0, 'a' },
     { "db",           1, 0, 'd' },
     { "count",        1, 0, 'c' },
-    { "export",       0, 0, 'e' },
     { "first",        1, 0, 'f' },
     { "format",       1, 0, 'F' },
     { "import",       0, 0, 'i' },
     { "last",         1, 0, 'l' },
     { "list-formats", 0, 0, 'L' },
     { "multi-args",   0, 0, 'm' },
+    { "purge",        0, 0, 'p' },
     { "readme",       0, 0, 'R' },
     { "verbose",      0, 0, 'v' },
     { "help",         0, 0, 'h' },
     { 0,              0, 0,  0  },
   };
-  while ( (opt = getopt_long(argc, argv, "aAc:d:ef:F:ilLmRvh?",
+  while ( (opt = getopt_long(argc, argv, "aAc:d:f:F:ilLmpRvh?",
                              flags, 0)) > 0 ) {
     switch (opt) {
 
@@ -58,9 +55,9 @@ int main(int argc, char **argv) {
         break;
 
       case 'A':
-	/* Store cmds that start with 'his' */
-	accept_his++;
-	break;
+        /* Store cmds that start with 'his' */
+        accept_his++;
+        break;
 
       case 'c':
         /* Set count for --most-recent */
@@ -76,11 +73,6 @@ int main(int argc, char **argv) {
           error("missing --db value");
         free(db);
         db = optarg;
-        break;
-
-      case 'e':
-        /* Export list to stdout */
-        action = EXPORT;
         break;
 
       case 'f':
@@ -124,10 +116,15 @@ int main(int argc, char **argv) {
         multiargs++;
         break;
 
+      case 'p':
+        /* Purge stuff */
+        action = PURGE;
+        break;
+
       case 'R':
-	/* Show readme and stop */
+        /* Show readme and stop */
         readme();
-	break;
+        break;
 
       case 'v':
         /* Enable verbose mode */
@@ -151,20 +148,14 @@ int main(int argc, char **argv) {
 
   /* Act. */
   switch (action) {
-    case FIND:
-      if (argc - optind <= 0)
-        error("nothing to search for");
-      find(argc - optind, argv + optind);
+    case LIST:
+      list_cmds(argc - optind, argv + optind);
       break;
     case ADD:
       if (argc - optind <= 0)
         error("no command to add");
       add(argc - optind, argv + optind);
       break;
-    case EXPORT:
-      if (argc - optind != 0)
-        error("no arguments expected after --export");
-      export_cmds();
       break;
     case IMPORT:
       if (argc - optind != 0)
@@ -172,9 +163,20 @@ int main(int argc, char **argv) {
       format = 2;
       import_cmds();
       break;
+    case PURGE:
+      purge();
+      break;
   }
 
+  /* Run a consistency checker if we have hit <magicnumber> of inserts
+     since the last checker run. */
   db_cleanup();
-  
+
+  /* A transaction was started in sqlinit(). We got here because we didn't
+     error() out so it's safe to commit. We are not running this through
+     sqlrun() because that might error out. If this COMMIT doesn't work then
+     we can't do much about it anyway. */
+  sqlite3_exec(dbconn, "COMMIT TRANSACTION", 0, 0, 0);
+
   return 0;
 }

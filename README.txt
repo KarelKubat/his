@@ -1,5 +1,20 @@
 README for clhist
 
+What it's about
+---------------
+
+    Have you ever wanted to keep your shell commands stored for your
+    convenience indefinitely, so you can search for anything you typed, even
+    years ago? As a sysadmin you might have solved some problem a year ago
+    using some obscure seldom-used tool and now you're wondering what that
+    invocation was. Or do you want to be able to sync your shell history across
+    machines, so that previously entered commands on one system can be seen in
+    the history list on another system?
+
+    With his you can. It stores each command that you enter in a database,
+    right as the next prompt appears. The history list is immediately
+    searchable.
+
 Compiling
 ---------
 
@@ -8,30 +23,44 @@ Compiling
     directory (under $HOME). Or use 'BINDIR=/what/ever make install' to install
     to /what/ever.
 
-    The code depends on sqlite3, and you need to have the headers available
-    during compilation. On debian-based systems, you may need to 'sudo apt-get
-    install libsqlite-dev'. Whichever distribution you use, make sure that
-    #include <sqlite3.h> works and that -lsqlite3 finds libsqlite3.a during
-    linkage. If you have different paths, then you might need to adapt the
-    Makefile.
+    The code depends on sqlite3, and you need to have the headers and the
+    development lib available during compilation and linking. On debian-based
+    systems, you may need to 'sudo apt-get install libsqlite-dev'. Whichever
+    distribution you use, make sure that #include <sqlite3.h> works and that
+    -lsqlite3 finds libsqlite3.a. If you have different paths, then you might
+    need to adapt the Makefile.
 
 General Usage
 -------------
 
-    his is self-describing, in the sense that if you type 'his' (without
-    arguments), you will see what flags and arguments are supported.
+    his is self-describing, in the sense that if you type either of
+        his --help
+	his -h
+	his -?
+    you will see what flags and arguments are supported.
 
   Searching for a command that you ran before
   -------------------------------------------
 
-    his is designed to be as easy to use as possible. The general usage is:
+    Typing just
+        his
+    will display the most recent commands, by default limited to the last 20.
+    This is similar to the bash builtin 'history'. You can limit the
+    selection by providing a timeframe (--first and --last) and/or a count
+    (--count).
+
+    To find specific commands, use the form
         his ARG1 ARG2 ARG3
     which will search the command history, and display anything that was typed
     on the commandline earlier having ARG1 and ARG2 and ARG3. SQL-like
     wildcards (% and _) are supported (because the underlying database,
     sqlite3, knows about them). Searching can be limited to a given date/time
-    using --first and --last.
-
+    using --first and --last. If you want to see only the last three
+    occurrences, use --count=3 (shorthand -c3). Example:
+        his --first=2017-01-01/00:00:00 --last=2017-01-01/01:00:00 ls
+    shows your 'ls' invocations during the first our of the year 2017 in
+    the GMT timezone.
+    
   What adding does
   ----------------
 
@@ -56,40 +85,21 @@ General Usage
     only adds that the same thing occurs agin but at a different timestamp. See
     also the data model section below.
 
-  Displaying the most recent commands
-  -----------------------------------
-
-    This is something like the Bash builtin 'history'. The invocation is:
-        his --export              # shorthand: -e
-    which by default displays the most recent 20 entries. The most recent entry
-    is shown as the last one.
-
-    To display all historical commands ever, use
-        his --export --count=0    # shorthand: -ec0
-
-    Alternatively, what is displayed can be controlled by timestamps: flag
-    --first=FROM sets the beginning, --last=TO sets the end. The timestamps
-    must be given in the format: YYYY-MM-DD/HH:MM:DD, in UTC (and not in
-    your local time). For example:
-        his --export --first=2000-01-01/00:00:00 \
-	              --last=2000-01-01/01:00:00
-    will show whatever you entered on the first hour of UTC New Year's Day 2000.
-
   Importing
   ---------
 
-    Exporting and importing can be used together, e.g. when syncing stored
+    Exporting and listing can be used together, e.g. when syncing stored
     commands between different machines:
-        his -ec0 | ssh user@remotesystem his -i
+        his -c0 | ssh user@remotesystem his -i
     (Remember that for a full export, you want --count=0 or -c0, since the
     arbitrary default is 20.)
 
     Or, you can ask the 'remote side' what its most recent timestamp is, and
     export only from that point on:
-    	TIMESTAMP=$(ssh user@remotesystem his -ec1 | awk '{print $1}')
-	his -e -f=${TIMESTAMP?} | ssh user@remotesystem his -i
+    	TIMESTAMP=$(ssh user@remotesystem his -c1 | awk '{print $1}')
+	his -f=${TIMESTAMP?} | ssh user@remotesystem his -i
     Here, flag -c1 means --count=1, which is: list only the one most recent
-    command.
+    command. Flag -f=${TIMESTAMP?} means: list entries on or after $TIMESTAMP.
 
 Making --add work automatically
 -------------------------------
@@ -161,6 +171,6 @@ Data model and storage
 	 ls -ltr
 	 ls /tmp
        have only four distinct strings: "ls", "-l", "/tmp", and "-ltr". The
-       tables and their contents will in this case have 3 CMD rows. but only 4
+       tables and their contents will in this case have 3 CMD rows, but only 4
        ARGS rows. The crosstable CROSSREF defines which ARG-strings are bound
        to any CMD and in which order.

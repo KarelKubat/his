@@ -9,5 +9,9 @@ void error(char const *fmt, ...) {
   fputc('\n', stderr);
   va_end(args);
 
+  /* Rollback the current transaction. Don't do this via sqlrun(), or that
+     might trigger error() again. We don't care about a rollback error,
+     we can't do anything about it anyway. */
+  sqlite3_exec(dbconn, "ROLLBACK TRANSACTION", 0, 0, 0);
   exit(1);
 }

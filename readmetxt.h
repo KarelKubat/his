@@ -4,6 +4,21 @@
 #define READMETEXT \
     "README for clhist\n"\
     "\n"\
+    "What it\'s about\n"\
+    "---------------\n"\
+    "\n"\
+    "    Have you ever wanted to keep your shell commands stored for your\n"\
+    "    convenience indefinitely, so you can search for anything you typed, even\n"\
+    "    years ago? As a sysadmin you might have solved some problem a year ago\n"\
+    "    using some obscure seldom-used tool and now you\'re wondering what that\n"\
+    "    invocation was. Or do you want to be able to sync your shell history across\n"\
+    "    machines, so that previously entered commands on one system can be seen in\n"\
+    "    the history list on another system?\n"\
+    "\n"\
+    "    With his you can. It stores each command that you enter in a database,\n"\
+    "    right as the next prompt appears. The history list is immediately\n"\
+    "    searchable.\n"\
+    "\n"\
     "Compiling\n"\
     "---------\n"\
     "\n"\
@@ -12,30 +27,44 @@
     "    directory (under $HOME). Or use \'BINDIR=/what/ever make install\' to install\n"\
     "    to /what/ever.\n"\
     "\n"\
-    "    The code depends on sqlite3, and you need to have the headers available\n"\
-    "    during compilation. On debian-based systems, you may need to \'sudo apt-get\n"\
-    "    install libsqlite-dev\'. Whichever distribution you use, make sure that\n"\
-    "    #include <sqlite3.h> works and that -lsqlite3 finds libsqlite3.a during\n"\
-    "    linkage. If you have different paths, then you might need to adapt the\n"\
-    "    Makefile.\n"\
+    "    The code depends on sqlite3, and you need to have the headers and the\n"\
+    "    development lib available during compilation and linking. On debian-based\n"\
+    "    systems, you may need to \'sudo apt-get install libsqlite-dev\'. Whichever\n"\
+    "    distribution you use, make sure that #include <sqlite3.h> works and that\n"\
+    "    -lsqlite3 finds libsqlite3.a. If you have different paths, then you might\n"\
+    "    need to adapt the Makefile.\n"\
     "\n"\
     "General Usage\n"\
     "-------------\n"\
     "\n"\
-    "    his is self-describing, in the sense that if you type \'his\' (without\n"\
-    "    arguments), you will see what flags and arguments are supported.\n"\
+    "    his is self-describing, in the sense that if you type either of\n"\
+    "        his --help\n"\
+    "	his -h\n"\
+    "	his -?\n"\
+    "    you will see what flags and arguments are supported.\n"\
     "\n"\
     "  Searching for a command that you ran before\n"\
     "  -------------------------------------------\n"\
     "\n"\
-    "    his is designed to be as easy to use as possible. The general usage is:\n"\
+    "    Typing just\n"\
+    "        his\n"\
+    "    will display the most recent commands, by default limited to the last 20.\n"\
+    "    This is similar to the bash builtin \'history\'. You can limit the\n"\
+    "    selection by providing a timeframe (--first and --last) and/or a count\n"\
+    "    (--count).\n"\
+    "\n"\
+    "    To find specific commands, use the form\n"\
     "        his ARG1 ARG2 ARG3\n"\
     "    which will search the command history, and display anything that was typed\n"\
     "    on the commandline earlier having ARG1 and ARG2 and ARG3. SQL-like\n"\
     "    wildcards (%% and _) are supported (because the underlying database,\n"\
     "    sqlite3, knows about them). Searching can be limited to a given date/time\n"\
-    "    using --first and --last.\n"\
-    "\n"\
+    "    using --first and --last. If you want to see only the last three\n"\
+    "    occurrences, use --count=3 (shorthand -c3). Example:\n"\
+    "        his --first=2017-01-01/00:00:00 --last=2017-01-01/01:00:00 ls\n"\
+    "    shows your \'ls\' invocations during the first our of the year 2017 in\n"\
+    "    the GMT timezone.\n"\
+    "    \n"\
     "  What adding does\n"\
     "  ----------------\n"\
     "\n"\
@@ -60,40 +89,21 @@
     "    only adds that the same thing occurs agin but at a different timestamp. See\n"\
     "    also the data model section below.\n"\
     "\n"\
-    "  Displaying the most recent commands\n"\
-    "  -----------------------------------\n"\
-    "\n"\
-    "    This is something like the Bash builtin \'history\'. The invocation is:\n"\
-    "        his --export              # shorthand: -e\n"\
-    "    which by default displays the most recent 20 entries. The most recent entry\n"\
-    "    is shown as the last one.\n"\
-    "\n"\
-    "    To display all historical commands ever, use\n"\
-    "        his --export --count=0    # shorthand: -ec0\n"\
-    "\n"\
-    "    Alternatively, what is displayed can be controlled by timestamps: flag\n"\
-    "    --first=FROM sets the beginning, --last=TO sets the end. The timestamps\n"\
-    "    must be given in the format: YYYY-MM-DD/HH:MM:DD, in UTC (and not in\n"\
-    "    your local time). For example:\n"\
-    "        his --export --first=2000-01-01/00:00:00 \\n"\
-    "	              --last=2000-01-01/01:00:00\n"\
-    "    will show whatever you entered on the first hour of UTC New Year\'s Day 2000.\n"\
-    "\n"\
     "  Importing\n"\
     "  ---------\n"\
     "\n"\
-    "    Exporting and importing can be used together, e.g. when syncing stored\n"\
+    "    Exporting and listing can be used together, e.g. when syncing stored\n"\
     "    commands between different machines:\n"\
-    "        his -ec0 | ssh user@remotesystem his -i\n"\
+    "        his -c0 | ssh user@remotesystem his -i\n"\
     "    (Remember that for a full export, you want --count=0 or -c0, since the\n"\
     "    arbitrary default is 20.)\n"\
     "\n"\
     "    Or, you can ask the \'remote side\' what its most recent timestamp is, and\n"\
     "    export only from that point on:\n"\
-    "    	TIMESTAMP=$(ssh user@remotesystem his -ec1 | awk \'{print $1}\')\n"\
-    "	his -e -f=${TIMESTAMP?} | ssh user@remotesystem his -i\n"\
+    "    	TIMESTAMP=$(ssh user@remotesystem his -c1 | awk \'{print $1}\')\n"\
+    "	his -f=${TIMESTAMP?} | ssh user@remotesystem his -i\n"\
     "    Here, flag -c1 means --count=1, which is: list only the one most recent\n"\
-    "    command.\n"\
+    "    command. Flag -f=${TIMESTAMP?} means: list entries on or after $TIMESTAMP.\n"\
     "\n"\
     "Making --add work automatically\n"\
     "-------------------------------\n"\
@@ -165,7 +175,7 @@
     "	 ls -ltr\n"\
     "	 ls /tmp\n"\
     "       have only four distinct strings: \"ls\", \"-l\", \"/tmp\", and \"-ltr\". The\n"\
-    "       tables and their contents will in this case have 3 CMD rows. but only 4\n"\
+    "       tables and their contents will in this case have 3 CMD rows, but only 4\n"\
     "       ARGS rows. The crosstable CROSSREF defines which ARG-strings are bound\n"\
     "       to any CMD and in which order.\n"\
     "\n"

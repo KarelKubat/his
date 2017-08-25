@@ -1,5 +1,22 @@
 #include "his.h"
 
+/* We had an insert. Create or update the count in the housekeeping table. */
+static void increment_inserts_count() {
+  char **res;
+  char *sql;
+
+  res = sqlrun("SELECT insert_count FROM housekeeping");
+  if (!res) {
+    sqlrun("INSERT INTO housekeeping (insert_count) VALUES (1)");
+    insert_count = 1;
+  } else {
+    insert_count = atoi(*res) + 1;
+    sql = xsprintf("UPDATE housekeeping SET insert_count=%d", insert_count);
+    sqlrun(sql);
+    free(sql);
+  }
+}
+
 void add(int ac, char **av) {
   CmdToAdd cmd;
   char **sqlret;
@@ -29,7 +46,7 @@ void add(int ac, char **av) {
       msg("command to add starts with 'his', not storing");
       return;
   }
-  
+
   /* If we already know a db entry with the same timestamp and the
      same hash, then this is a repetition and we don't need to add
      anything.
@@ -42,13 +59,17 @@ void add(int ac, char **av) {
   sqlret = sqlrun(sql);
   free(sql);
   if (sqlret) {
-    found_timestamp = atoi(sqlret[1]);
-    if (found_timestamp == cmd.timestamp) {
-      msg("entry was already added");
-      return;
+    for (i = 0; sqlret[i]; i += 2) {
+      found_timestamp = atoi(sqlret[i + 1]);
+      str_stamp = gm_timestamp(found_timestamp);
+      if (found_timestamp == cmd.timestamp) {
+        msg("entry with hash=%d was already added at timestamp=%s",
+            cmd.hash, str_stamp);
+        free(str_stamp);
+        return;
+      }
     }
-    str_stamp = gm_timestamp(found_timestamp);
-    msg("identical entry occurs at %s, duplicating for new timestamp",
+    msg("identical entry occurs at a different stamp, duplicating",
         str_stamp);
     free(str_stamp);
     sql = xsprintf("INSERT INTO cmd (cmd_id, hash, timestamp) "
@@ -56,6 +77,7 @@ void add(int ac, char **av) {
                    atoi(sqlret[0]), cmd.hash, cmd.timestamp);
     sqlrun(sql);
     free(sql);
+    increment_inserts_count();
     return;
   }
 
@@ -80,4 +102,6 @@ void add(int ac, char **av) {
     sqlrun(sql);
     free(sql);
   }
+
+  increment_inserts_count();
 }

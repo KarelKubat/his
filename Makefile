@@ -23,6 +23,14 @@ install: local
 	@echo
 	@echo 'Installation successful, $(BINDIR)/his can be used'
 
+# Loadtest some random stuff
+loadtest: local
+	install -s his /tmp
+	rm -f /tmp/loadtest.out
+	perl loadtest.pl | tee /tmp/loadtest.out
+	@echo
+	@echo "Output is also in /tmp/loadtest.out"
+
 # Linking the objects
 his: $(OBJ)
 	$(CC) -g -Wall -o $@ $(OBJ) -lsqlite3
