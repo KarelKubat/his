@@ -103,7 +103,7 @@ static void parse_format_3(int ac, char **av, CmdToAdd *cmd) {
   if (sscanf(av[0], "%ld", &(cmd->timestamp)) < 0)
     error("UTC timestamp (number) expected, got %s", av[0]);
   cmd->av = av + 1;
-  cmd->ac = ac = 1;
+  cmd->ac = ac - 1;
 }
 
 void parse(int ac, char **av, CmdToAdd *cmd) {

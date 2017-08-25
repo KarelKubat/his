@@ -8,19 +8,22 @@ static int callback(void *unused, int ac, char **av, char **colnames) {
   char *full;
 
   /* Copy current returns int sql_av and sql_ac */
-  if (!ac || !av || !av[0] || !*av[0])
+  if (!ac || !av || !av[0] || !*av[0]) {
     msg("no results");
-  else {
-    full = full_command(ac, av);
-    msg("results are [%s]", full);
-    free(full);
-
-    sql_ac = ac;
-    sql_av = (char **)xmalloc((ac + 1) * sizeof(char*));
-    for (i = 0; i < ac; i++)
-      sql_av[i] = xstrdup(av[i]);
-    sql_av[ac] = 0;
+    return 0;
   }
+
+  for (i = 0; i < ac; i++) {
+    sql_av = (char **)xrealloc(sql_av, (sql_ac + 2) * sizeof(char*));
+    sql_av[sql_ac] = xstrdup(av[i]);
+    sql_ac++;
+    sql_av[sql_ac] = 0;
+  }
+
+  full = full_command(sql_ac, sql_av);
+  msg("results (so far): [%s]", full);
+  free(full);
+
   return 0;
 }
 

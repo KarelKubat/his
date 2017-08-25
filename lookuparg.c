@@ -3,7 +3,7 @@
 /* Lookup an arg in table args. If it isn't found yet, insert it.
    Return its ID. */
 int lookup_arg(char const *arg) {
-  char const select_sql[] = "SELECT args_id FROM args WHERE  arg = '?'";
+  char const select_sql[] = "SELECT args_id FROM args WHERE  arg = ?";
   char const insert_sql[] = "INSERT INTO args (arg) VALUES (?)";
 
   sqlite3_stmt *select_stmt, *insert_stmt;

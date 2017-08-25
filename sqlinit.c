@@ -27,4 +27,8 @@ void sqlinit() {
     if (sqlite3_exec(dbconn, CREATETABLESTEXT, 0, 0, &errmsg) != SQLITE_OK)
       error("error while creating tables: %s", errmsg);
   }
+
+  /* Start a sqlite3 transaction. An error will roll back, a successful
+     finish of main() will commit. */
+  sqlrun("BEGIN TRANSACTION");
 }

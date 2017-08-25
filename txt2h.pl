@@ -2,10 +2,13 @@
 
 use strict;
 
-die <<"EOF" if ($#ARGV != 2);
+die <<"EOF" if ($#ARGV != 3);
 
-Usage: txt2h.pl input.txt output.h DEFINENAME
+Usage: txt2h.pl input.txt output.h DEFINENAME REPLACEPERCENT
+
 Makes a #define for you in output.h
+If REPLACEPERCENT is nonzero then % is changed to %%, useful for printf()
+fmt strings.
 
 EOF
 
@@ -21,6 +24,9 @@ TOP
 
 while (my $line = <$if>) {
   chomp($line);
+  $line =~ s{"}{\\"}g;
+  $line =~ s{'}{\\'}g;
+  $line =~ s{%}{%%}g if ($ARGV[3] != 0);
   print $of ('    ', '"', $line, "\\n", '"', "\\", "\n");
 }
 print $of ('    ', "\"\\n\"", "\n");
