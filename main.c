@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
     { "help",         0, 0, 'h' },
     { 0,              0, 0,  0  },
   };
-  while ( (opt = getopt_long(argc, argv, "aAc:d:f:F:ilLmpRvh?",
+  while ( (opt = getopt_long(argc, argv, "aAc:d:f:F:il:LmpRvh?",
                              flags, 0)) > 0 ) {
     switch (opt) {
 

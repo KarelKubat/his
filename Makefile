@@ -45,7 +45,7 @@ his: $(OBJ)
 usagetxt.h: usagetxt.txt Makefile
 	perl txt2h.pl $< $@ USAGETEXT 0
 formatstxt.h: formatstxt.txt Makefile
-	perl txt2h.pl $< $@ FORMATSTEXT 0
+	perl txt2h.pl $< $@ FORMATSTEXT 1
 createtablestxt.h: createtablestxt.txt Makefile
 	perl txt2h.pl $< $@ CREATETABLESTEXT 0
 readmetxt.h: README.txt Makefile

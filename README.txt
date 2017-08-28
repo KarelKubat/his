@@ -1,5 +1,3 @@
-README for clhist
-
 What it's about
 ---------------
 
@@ -58,9 +56,9 @@ General Usage
     using --first and --last. If you want to see only the last three
     occurrences, use --count=3 (shorthand -c3). Example:
         his --first=2017-01-01/00:00:00 --last=2017-01-01/01:00:00 ls
-    shows your 'ls' invocations during the first our of the year 2017 in
+    shows your 'ls' invocations during the first hour of the year 2017 in
     the GMT timezone.
-    
+
   What adding does
   ----------------
 
@@ -74,25 +72,26 @@ General Usage
     You can see that history format by running the Bash builtin command
     'history'. Try for an overview of formats.
 
-    Normally his won't store its own invocations; it only pollutes the saved
-    list. If you want to, you can use flag --accept-his when adding commands to
-    make sure that even such invocations end up in the list.
+    Normally his won't store its own invocations (i.e., anything that starts
+    with 'his); it only pollutes the saved list. If you want to, you can use
+    flag --accept-his when adding commands to make sure that even such
+    invocations end up in the list.
 
     Adding is 'smart' in the sense that it doesn't duplicate already present
-    entries. So you can add the same command over and over again, without
-    polluting the list. Also due to the internal structure, an identical
-    command that is added at a different time doesn't duplicate everything,
-    only adds that the same thing occurs agin but at a different timestamp. See
-    also the data model section below.
+    entries. So you can enter the same command over and over again and `his'
+    will only log it as occurring at different timestamps; it won't duplicate
+    everything. This even holds true for arguments (parts of a command
+    line). E.g., two commands `ls -l /tmp' and 'ls -l /usr' will be stored by
+    re-using the parts 'ls' and '-l'. See also the data model section below.
 
   Importing
   ---------
 
-    Exporting and listing can be used together, e.g. when syncing stored
-    commands between different machines:
+    Exporting and listing can be used together, e.g. to sync lists between
+    different machines:
         his -c0 | ssh user@remotesystem his -i
-    (Remember that for a full export, you want --count=0 or -c0, since the
-    arbitrary default is 20.)
+    (For a full export, you want --count=0 or -c0, since the arbitrary default
+    is 20.)
 
     Or, you can ask the 'remote side' what its most recent timestamp is, and
     export only from that point on:
@@ -104,7 +103,7 @@ General Usage
 Making --add work automatically
 -------------------------------
 
-  Bash
+  bash
   ----
 
     If your shell is bash, edit your ~/.profile (or ~/.bashrc) and put in:
@@ -126,6 +125,18 @@ Making --add work automatically
 
     Et voila, your commands are saved into a sqlite database called
     $HOME/.his.db.
+
+  tcsh
+  ----
+
+    For tcsh users, edit your ~/.cshrc and put in:
+
+      alias precmd 'his --multi-args --add --format=3 `date +%s` $_'
+
+    tcsh will happily run the precmd alias before displaying the next prompt.
+    In this case, this is an invoction to 'his --add' using addition format 3
+    (try 'his --list-formats' to see what that is). The information to add is
+    the UTC timestamp in seconds and the previous command ($_).
 
 Data model and storage
 ----------------------
@@ -173,4 +184,4 @@ Data model and storage
        have only four distinct strings: "ls", "-l", "/tmp", and "-ltr". The
        tables and their contents will in this case have 3 CMD rows, but only 4
        ARGS rows. The crosstable CROSSREF defines which ARG-strings are bound
-       to any CMD and in which order.
+       to which CMD and in which order.

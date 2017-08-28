@@ -2,8 +2,6 @@
 /* Instead adapt README.txt and run 'make readmetxt.h' */
 
 #define READMETEXT \
-    "README for clhist\n"\
-    "\n"\
     "What it\'s about\n"\
     "---------------\n"\
     "\n"\
@@ -62,9 +60,9 @@
     "    using --first and --last. If you want to see only the last three\n"\
     "    occurrences, use --count=3 (shorthand -c3). Example:\n"\
     "        his --first=2017-01-01/00:00:00 --last=2017-01-01/01:00:00 ls\n"\
-    "    shows your \'ls\' invocations during the first our of the year 2017 in\n"\
+    "    shows your \'ls\' invocations during the first hour of the year 2017 in\n"\
     "    the GMT timezone.\n"\
-    "    \n"\
+    "\n"\
     "  What adding does\n"\
     "  ----------------\n"\
     "\n"\
@@ -78,25 +76,26 @@
     "    You can see that history format by running the Bash builtin command\n"\
     "    \'history\'. Try for an overview of formats.\n"\
     "\n"\
-    "    Normally his won\'t store its own invocations; it only pollutes the saved\n"\
-    "    list. If you want to, you can use flag --accept-his when adding commands to\n"\
-    "    make sure that even such invocations end up in the list.\n"\
+    "    Normally his won\'t store its own invocations (i.e., anything that starts\n"\
+    "    with \'his); it only pollutes the saved list. If you want to, you can use\n"\
+    "    flag --accept-his when adding commands to make sure that even such\n"\
+    "    invocations end up in the list.\n"\
     "\n"\
     "    Adding is \'smart\' in the sense that it doesn\'t duplicate already present\n"\
-    "    entries. So you can add the same command over and over again, without\n"\
-    "    polluting the list. Also due to the internal structure, an identical\n"\
-    "    command that is added at a different time doesn\'t duplicate everything,\n"\
-    "    only adds that the same thing occurs agin but at a different timestamp. See\n"\
-    "    also the data model section below.\n"\
+    "    entries. So you can enter the same command over and over again and `his\'\n"\
+    "    will only log it as occurring at different timestamps; it won\'t duplicate\n"\
+    "    everything. This even holds true for arguments (parts of a command\n"\
+    "    line). E.g., two commands `ls -l /tmp\' and \'ls -l /usr\' will be stored by\n"\
+    "    re-using the parts \'ls\' and \'-l\'. See also the data model section below.\n"\
     "\n"\
     "  Importing\n"\
     "  ---------\n"\
     "\n"\
-    "    Exporting and listing can be used together, e.g. when syncing stored\n"\
-    "    commands between different machines:\n"\
+    "    Exporting and listing can be used together, e.g. to sync lists between\n"\
+    "    different machines:\n"\
     "        his -c0 | ssh user@remotesystem his -i\n"\
-    "    (Remember that for a full export, you want --count=0 or -c0, since the\n"\
-    "    arbitrary default is 20.)\n"\
+    "    (For a full export, you want --count=0 or -c0, since the arbitrary default\n"\
+    "    is 20.)\n"\
     "\n"\
     "    Or, you can ask the \'remote side\' what its most recent timestamp is, and\n"\
     "    export only from that point on:\n"\
@@ -108,7 +107,7 @@
     "Making --add work automatically\n"\
     "-------------------------------\n"\
     "\n"\
-    "  Bash\n"\
+    "  bash\n"\
     "  ----\n"\
     "\n"\
     "    If your shell is bash, edit your ~/.profile (or ~/.bashrc) and put in:\n"\
@@ -130,6 +129,18 @@
     "\n"\
     "    Et voila, your commands are saved into a sqlite database called\n"\
     "    $HOME/.his.db.\n"\
+    "\n"\
+    "  tcsh\n"\
+    "  ----\n"\
+    "\n"\
+    "    For tcsh users, edit your ~/.cshrc and put in:\n"\
+    "\n"\
+    "      alias precmd \'his --multi-args --add --format=3 `date +%s` $_\'\n"\
+    "\n"\
+    "    tcsh will happily run the precmd alias before displaying the next prompt.\n"\
+    "    In this case, this is an invoction to \'his --add\' using addition format 3\n"\
+    "    (try \'his --list-formats\' to see what that is). The information to add is\n"\
+    "    the UTC timestamp in seconds and the previous command ($_).\n"\
     "\n"\
     "Data model and storage\n"\
     "----------------------\n"\
@@ -177,5 +188,5 @@
     "       have only four distinct strings: \"ls\", \"-l\", \"/tmp\", and \"-ltr\". The\n"\
     "       tables and their contents will in this case have 3 CMD rows, but only 4\n"\
     "       ARGS rows. The crosstable CROSSREF defines which ARG-strings are bound\n"\
-    "       to any CMD and in which order.\n"\
+    "       to which CMD and in which order.\n"\
     "\n"
