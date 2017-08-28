@@ -57,7 +57,7 @@
     "        his ARG1 ARG2 ARG3\n"\
     "    which will search the command history, and display anything that was typed\n"\
     "    on the commandline earlier having ARG1 and ARG2 and ARG3. SQL-like\n"\
-    "    wildcards (%% and _) are supported (because the underlying database,\n"\
+    "    wildcards (% and _) are supported (because the underlying database,\n"\
     "    sqlite3, knows about them). Searching can be limited to a given date/time\n"\
     "    using --first and --last. If you want to see only the last three\n"\
     "    occurrences, use --count=3 (shorthand -c3). Example:\n"\
@@ -74,7 +74,7 @@
     "    provided that you supply the right \'parsing format\'. This is how his pulls\n"\
     "    out a timestamp and previous commandline from its arguments. The default\n"\
     "    parsing format is the one that bash uses when you\n"\
-    "        export HISTTIMEFORMAT=\"[%%Y-%%m-%%d %%H:%%M:%%S %%z] \"\n"\
+    "        export HISTTIMEFORMAT=\"[%Y-%m-%d %H:%M:%S %z] \"\n"\
     "    You can see that history format by running the Bash builtin command\n"\
     "    \'history\'. Try for an overview of formats.\n"\
     "\n"\
@@ -116,7 +116,7 @@
     "    function preprompt() {\n"\
     "       his --add -- \"$(history 1)\"\n"\
     "    }\n"\
-    "    export HISTTIMEFORMAT=\"[%%Y-%%m-%%d %%H:%%M:%%S %%z] \"\n"\
+    "    export HISTTIMEFORMAT=\"[%Y-%m-%d %H:%M:%S %z] \"\n"\
     "    PROMPT_COMMAND=preprompt\n"\
     "\n"\
     "    What this does, is instruct bash that there is a $PREPROMPT_COMMAND to run,\n"\

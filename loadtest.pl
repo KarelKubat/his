@@ -43,8 +43,12 @@ sub progress($$$$$) {
   
 
 # main
-unlink($DB);
 my $totlen = 0;
+if ($#ARGV == 0) {
+  $totlen = int($ARGV[0]);
+} else {
+  unlink($DB);
+}
 my $prevtime = time();
 my $starttime = $prevtime;
 for my $i (1..$NCMDS) {

@@ -1,8 +1,10 @@
 #include "his.h"
 
 void purge() {
-  sqlite3_stmt args_stmt, crossref_stmt, cmd_stmt;
+  sqlite3_stmt *args_stmt, *crossref_stmt, *cmd_stmt;
   int within_stamps, stamp;
+
+  error("--purge is not yet implemented");
 
   /* We need a first and a last timestamp to avoid mistakes. */
   if (!first_timestamp || !last_timestamp)
@@ -27,3 +29,7 @@ void purge() {
         }
       }
       sqlite3_finalize(cmd_stmt);
+    }
+  }
+}
+<

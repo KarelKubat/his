@@ -44,12 +44,12 @@ his: $(OBJ)
 # How to generate .h from text files
 usagetxt.h: usagetxt.txt Makefile
 	perl txt2h.pl $< $@ USAGETEXT 0
-formatstxt.h: formatstxt.txt
+formatstxt.h: formatstxt.txt Makefile
 	perl txt2h.pl $< $@ FORMATSTEXT 0
-createtablestxt.h: createtablestxt.txt
+createtablestxt.h: createtablestxt.txt Makefile
 	perl txt2h.pl $< $@ CREATETABLESTEXT 0
-readmetxt.h: README.txt
-	perl txt2h.pl $< $@ READMETEXT 1
+readmetxt.h: README.txt Makefile
+	perl txt2h.pl $< $@ READMETEXT 0
 
 # Clean up
 clean:

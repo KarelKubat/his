@@ -4,6 +4,8 @@ CREATE TABLE cmd (
     hash      INTEGER NOT NULL,
     UNIQUE    (cmd_id, timestamp, hash)
 );
+CREATE INDEX cmd_id_index ON cmd (cmd_id);
+CREATE INDEX cmd_id_timestamp_index ON cmd (cmd_id, timestamp);
 
 CREATE TABLE args (
     args_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,3 +24,4 @@ CREATE TABLE crossref (
 CREATE TABLE housekeeping (
     insert_count INTEGER
 );
+
