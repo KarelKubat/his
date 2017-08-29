@@ -6,9 +6,23 @@ typedef struct {
   int hitcount;  /* Nr. of args this entry matches */
 } Result;
 
-/* The invocation was without args to find. Just list, optionally limited
-   by timestamps and/or a count. */
-static void list_without_finding() {
+/* The invocation was without timestamps, without a count, without args, so a
+   full dump.  We can just order by timestamp, without constraints, and show
+   all. */
+static void list_all() {
+  sqlite3_stmt *stmt;
+
+  stmt = sqlprepare("SELECT cmd_id, timestamp FROM cmd ORDER BY TIMESTAMP");
+  while ( (sqlstep(stmt) == SQLITE_ROW) )
+    show_command(sqlite3_column_int(stmt, 0),
+                 sqlite3_column_int(stmt, 1));
+  sqlite3_finalize(stmt);
+}
+
+/* The invocation was without args to find, but with a count or with
+   timestamps. We must order by the timestamp in reverse to get the most recent
+   matching entries, and then flip it for display. */
+static void list_by_timestamps() {
   char *sql, *extra;
   sqlite3_stmt *cmd_stmt;
   Result *res = 0;
@@ -44,7 +58,7 @@ static void list_without_finding() {
       free(extra);
   }
 
-  sqlprepare(sql, &cmd_stmt);
+  cmd_stmt = sqlprepare(sql);
   free(sql);
 
   while ( (sqlstep(cmd_stmt) == SQLITE_ROW) ) {
@@ -99,11 +113,11 @@ static void list_with_finding(int ac, char **av) {
     free(extra);
   }
   sql = xstrcat(sql, " ORDER BY cmd.timestamp");
-  sqlprepare(sql, &cmd_stmt);
+  cmd_stmt = sqlprepare(sql);
 
   for (i = 0; i < ac; i++) {
     msg("looking for [%s]", av[i]);
-    sqlite3_bind_text(cmd_stmt, 1, av[i], strlen(av[i]), 0);
+    sqlbindstring(cmd_stmt, av[i], 0);
     while (sqlstep(cmd_stmt) == SQLITE_ROW) {
       found = 0;
       for (n = 0; n < nres; n++)
@@ -148,6 +162,10 @@ void list_cmds(int ac, char **av) {
 
   if (ac)
     list_with_finding(ac, av);
-  else
-    list_without_finding();
+  else {
+    if (first_timestamp || last_timestamp || count)
+      list_by_timestamps();
+    else
+      list_all();
+  }
 }

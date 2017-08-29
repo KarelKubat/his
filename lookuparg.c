@@ -10,17 +10,18 @@ int lookup_arg(char const *arg) {
 
   int args_id;
 
-  sqlprepare(select_sql, &select_stmt);
-  sqlite3_bind_text(select_stmt, 1, arg, strlen(arg), 0);
+  select_stmt = sqlprepare(select_sql);
+  sqlbindstring(select_stmt, arg, 0);
   if ( (sqlstep(select_stmt)) == SQLITE_ROW ) {
     args_id = sqlite3_column_int(select_stmt, 0);
     sqlite3_finalize(select_stmt);
     msg("arg [%s] already found at ID %d", arg, args_id);
     return args_id;
   }
+  sqlite3_finalize(insert_stmt);
 
-  sqlprepare(insert_sql, &insert_stmt);
-  sqlite3_bind_text(insert_stmt, 1, arg, strlen(arg), 0);
+  insert_stmt = sqlprepare(insert_sql);
+  sqlbindstring(insert_stmt, arg, 0);
   if (sqlstep(insert_stmt) != SQLITE_DONE)
     error("failed to insert [%s] into args: %s", arg, sqlite3_errmsg(dbconn));
   args_id = sqlite3_last_insert_rowid(dbconn);

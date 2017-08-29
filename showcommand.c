@@ -11,7 +11,7 @@ void show_command(int cmd_id, int timestamp) {
                  "AND      args.args_id = crossref.args_id "
                  "ORDER BY crossref.position",
                  timestamp, cmd_id);
-  sqlprepare(sql, &args_stmt);
+  args_stmt = sqlprepare(sql);
   free(sql);
   while ( (sqlstep(args_stmt) == SQLITE_ROW) ) {
     extra = xsprintf(" %s", sqlite3_column_text(args_stmt, 0));

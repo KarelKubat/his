@@ -19,12 +19,12 @@ void purge() {
      - Delete the result.
   */
 
-  sqlprepare("DELETE FROM args WHERE args_id = ?",
-             &args_delete_stmt);
-  sqlprepare("DELETE FROM crossref WHERE cmd_id = ? AND args_id = ?",
-             &crossref_delete_stmt);
-  sqlprepare("DELETE FROM cmd WHERE cmd_id = ? AND timestamp = ?",
-             &cmd_delete_stmt);
+  args_delete_stmt = sqlprepare("DELETE FROM args "
+                                "WHERE args_id = ?");
+  crossref_delete_stmt = sqlprepare("DELETE FROM crossref "
+                                    "WHERE cmd_id = ? AND args_id = ?");
+  cmd_delete_stmt = sqlprepare("DELETE FROM cmd "
+                               "WHERE cmd_id = ? AND timestamp = ?");
 
   sql = xsprintf("SELECT  cmd.cmd_id, cmd.timestamp, args.args_id "
                  "FROM    cmd, crossref, args "
@@ -39,7 +39,7 @@ void purge() {
                  " AND    (cmd.timestamp < %d OR cmd.timestamp > %d))",
                  first_timestamp, last_timestamp,
                  first_timestamp, last_timestamp);
-  sqlprepare(sql, &select_stmt);
+  select_stmt = sqlprepare(sql);
   free(sql);
   while (sqlstep(select_stmt) == SQLITE_ROW) {
     cmd_id        = sqlite3_column_int(select_stmt, 0);
@@ -52,21 +52,21 @@ void purge() {
     free(stamp);
 
     /* This args_id occurs only within the timestamp */
-    sqlite3_bind_int(args_delete_stmt, args_id, 1);
+    sqlbindint(args_delete_stmt, args_id, 0);
     if (sqlstep(args_delete_stmt) != SQLITE_DONE)
       error("failed to delete from args table where args_id=%d: %s",
             args_id, sqlite3_errmsg(dbconn));
 
     /* cmd entry can go. */
-    sqlite3_bind_int(cmd_delete_stmt, cmd_id, 0);
-    sqlite3_bind_int(cmd_delete_stmt, cmd_timestamp, 1);
+    sqlbindint(cmd_delete_stmt, cmd_id, 0);
+    sqlbindint(cmd_delete_stmt, cmd_timestamp, 1);
     if (sqlstep(cmd_delete_stmt) != SQLITE_DONE)
       error("failed to delete from cmd where cmd_id=%d and timestamp=%d: %s",
             cmd_id, cmd_timestamp, sqlite3_errmsg(dbconn));
 
     /* crossref is cleaned up last as it has foreign keys */
-    sqlite3_bind_int(crossref_delete_stmt, cmd_id, 0);
-    sqlite3_bind_int(crossref_delete_stmt, args_id, 1);
+    sqlbindint(crossref_delete_stmt, cmd_id, 0);
+    sqlbindint(crossref_delete_stmt, args_id, 1);
     if (sqlstep(crossref_delete_stmt) != SQLITE_DONE)
       error("failed to delete from crossref where cmd_id=%d "
             "and args_id=%d: %s",
@@ -84,15 +84,15 @@ void purge() {
                  "FROM   cmd "
                  "WHERE timestamp >= %d AND timestamp <= %d",
                  first_timestamp, last_timestamp);
-  sqlprepare(sql, &select_stmt);
+  select_stmt = sqlprepare(sql);
   free(sql);
 
   while (sqlstep(select_stmt) == SQLITE_ROW) {
     cmd_id        = sqlite3_column_int(select_stmt, 0);
     cmd_timestamp = sqlite3_column_int(select_stmt, 1);
 
-    sqlite3_bind_int(cmd_delete_stmt, cmd_id, 0);
-    sqlite3_bind_int(cmd_delete_stmt, cmd_timestamp, 1);
+    sqlbindint(cmd_delete_stmt, cmd_id, 0);
+    sqlbindint(cmd_delete_stmt, cmd_timestamp, 1);
 
     if ( (rc = sqlstep(cmd_delete_stmt)) != SQLITE_DONE &&
          rc != SQLITE_CONSTRAINT)
