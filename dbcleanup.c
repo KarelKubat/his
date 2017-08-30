@@ -1,6 +1,7 @@
 #include "his.h"
 
 void db_cleanup() {
+  SqlCtx *ctx;
   /* Enforce DB consistency. Such errors should of course not occur in the
      first place, but hey. There's crashes and stuff.
      But no bugs. No bugs at all. Never bugs.
@@ -16,14 +17,20 @@ void db_cleanup() {
 
   /* Any cmd_id may only be in the db when it's in both the CMD and in
      the CROSSREF tables. */
-  sqlrun("DELETE FROM cmd "
-         "WHERE  cmd_id NOT IN (SELECT cmd_id FROM crossref)");
+  ctx = sqlnew("DELETE FROM cmd "
+               "WHERE  cmd_id NOT IN (SELECT cmd_id FROM crossref)", 0);
+  sqlrun(ctx);
+  sqlend(ctx);
 
   /* Any args_id may only be in the db when it's in both the ARGS and in
      the CROSSREF tables. */
-  sqlrun("DELETE FROM args "
-         "WHERE  args_id NOT IN (SELECT args_id FROM args)");
+  ctx = sqlnew("DELETE FROM args "
+               "WHERE  args_id NOT IN (SELECT args_id FROM args)", 0);
+  sqlrun(ctx);
+  sqlend(ctx);
 
   /* Reset the insert count. */
-  sqlrun("UPDATE housekeeping SET insert_count = 0");
+  ctx = sqlnew("UPDATE housekeeping SET insert_count = 0", 0);
+  sqlrun(ctx);
+  sqlend(ctx);
 }

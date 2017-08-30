@@ -28,6 +28,19 @@ typedef struct {
   char **argv;
 } Args;
 
+
+/* Type of bindings in a sqlnew() call */
+typedef enum {
+  INT,
+  STR,
+} SqlBindType;
+
+/* Context for sqlite3 runs */
+typedef struct {
+  char const *sql;
+  sqlite3_stmt *stmt;
+} SqlCtx;
+
 /* Max parsing format that is acceptable and the default */
 #define DEFAULT_FORMAT 1
 #define MAX_FORMAT     3
@@ -68,12 +81,12 @@ extern void readme(void);
 extern void show_command(int cmd_id, int timestamp);
 extern void str2args(char *s, Args *args);
 extern time_t str2timestamp(char const *s);
-extern void sqlbindint(sqlite3_stmt *stmt, int val, int pos);
-extern void sqlbindstring(sqlite3_stmt *stmt, char const *str, int pos);
 extern void sqlinit(void);
-extern sqlite3_stmt *sqlprepare(char const *sql);
-extern char **sqlrun(char const *sql);
-extern int sqlstep(sqlite3_stmt *stmt);
+extern int sqlcolint(SqlCtx *ctx, int col);
+extern const char *sqlcolstring(SqlCtx *ctx, int col);
+extern SqlCtx *sqlnew(char const *sql, int nbindings, ...);
+extern int sqlrun(SqlCtx *ctx);
+extern void sqlend(SqlCtx *ctx);
 extern void usage(void);
 extern void *xmalloc(size_t sz);
 extern void *xrealloc(void *what, size_t sz);

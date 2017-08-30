@@ -12,13 +12,15 @@ URL = 'http://www.kubat.nl/pages/his'
 SRC = $(wildcard *.c)
 OBJ = $(SRC:.c=.o)
 
-# Top level target, creates the binary 'his' in current directory
-local: usagetxt.h his
-	@echo
-	@echo 'Type "make install" if you want to install his.'
-	@echo 'Type "BINDIR=/what/ever make install" to change the path.'
+foo:
+	@cat COMPILING.txt
+	exit 1
 
-install: local
+# Top level target, creates the binary 'his' in current directory
+his: $(OBJ)
+	$(CC) -g -Wall -o $@ $(OBJ) -lsqlite3
+
+install: his
 	install -s his $(BINDIR)
 	@echo
 	@echo 'Installation successful, $(BINDIR)/his can be used'
@@ -30,10 +32,6 @@ loadtest: local
 	perl loadtest.pl | tee /tmp/loadtest.out
 	@echo
 	@echo "Output is also in /tmp/loadtest.out"
-
-# Linking the objects
-his: $(OBJ)
-	$(CC) -g -Wall -o $@ $(OBJ) -lsqlite3
 
 # Compilation rule
 %.o: %.c
@@ -53,7 +51,7 @@ readmetxt.h: README.txt Makefile
 
 # Clean up
 clean:
-	rm -f his $(OBJ) usagetxt.h formatstxt.h createtablestxt.h
+	rm -f his $(OBJ) usagetxt.h formatstxt.h createtablestxt.h readmetxt.h
 
 # Extra deps, due to generated .h files from .txt and data instantiation
 main.o: main.c his.h

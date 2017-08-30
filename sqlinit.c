@@ -9,8 +9,8 @@ static void sqlopen() {
 /* If the database doesn't exist yet, create it and the tables in it. */
 void sqlinit() {
   struct stat statbuf;
-  char *errmsg;
   int db_exists;
+  SqlCtx *ctx;
 
   if (dbconn)
     return;
@@ -24,11 +24,14 @@ void sqlinit() {
   else {
     /* Create the tables. */
     msg("creating db %s and its tables", db);
-    if (sqlite3_exec(dbconn, CREATETABLESTEXT, 0, 0, &errmsg) != SQLITE_OK)
-      error("error while creating tables: %s", errmsg);
+    ctx = sqlnew(CREATETABLESTEXT, 0);
+    sqlrun(ctx);
+    sqlend(ctx);
   }
 
   /* Start a sqlite3 transaction. An error will roll back, a successful
      finish of main() will commit. */
-  sqlrun("BEGIN TRANSACTION");
+  ctx = sqlnew("BEGIN TRANSACTION", 0);
+  sqlrun(ctx);
+  sqlend(ctx);
 }

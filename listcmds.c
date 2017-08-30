@@ -10,21 +10,21 @@ typedef struct {
    full dump.  We can just order by timestamp, without constraints, and show
    all. */
 static void list_all() {
-  sqlite3_stmt *stmt;
+  SqlCtx *ctx;
 
-  stmt = sqlprepare("SELECT cmd_id, timestamp FROM cmd ORDER BY TIMESTAMP");
-  while ( (sqlstep(stmt) == SQLITE_ROW) )
-    show_command(sqlite3_column_int(stmt, 0),
-                 sqlite3_column_int(stmt, 1));
-  sqlite3_finalize(stmt);
+  ctx = sqlnew("SELECT cmd_id, timestamp FROM cmd ORDER BY TIMESTAMP",
+               0);
+  while ( (sqlrun(ctx) == SQLITE_ROW) )
+    show_command(sqlcolint(ctx, 0), sqlcolint(ctx, 1));
+  sqlend(ctx);
 }
 
 /* The invocation was without args to find, but with a count or with
    timestamps. We must order by the timestamp in reverse to get the most recent
    matching entries, and then flip it for display. */
 static void list_by_timestamps() {
+  SqlCtx *ctx;
   char *sql, *extra;
-  sqlite3_stmt *cmd_stmt;
   Result *res = 0;
   int nres = 0, i;
 
@@ -58,19 +58,19 @@ static void list_by_timestamps() {
       free(extra);
   }
 
-  cmd_stmt = sqlprepare(sql);
+  ctx = sqlnew(sql, 0);
   free(sql);
 
-  while ( (sqlstep(cmd_stmt) == SQLITE_ROW) ) {
+  while ( (sqlrun(ctx) == SQLITE_ROW) ) {
     if (!nres)
       res = (Result *) xmalloc(sizeof(Result));
     else
       res = (Result *) xrealloc(res, (nres + 1) * sizeof(Result));
-    res[nres].cmd_id    = sqlite3_column_int(cmd_stmt, 0);
-    res[nres].timestamp = sqlite3_column_int(cmd_stmt, 1);
+    res[nres].cmd_id    = sqlcolint(ctx, 0);
+    res[nres].timestamp = sqlcolint(ctx, 1);
     nres++;
   }
-  sqlite3_finalize(cmd_stmt);
+  sqlend(ctx);
 
   for (i = nres - 1; i >= 0; i--)
     show_command(res[i].cmd_id, res[i].timestamp);
@@ -87,7 +87,7 @@ static int compar(const void *a, const void *b) {
 /* The invocation was with args to find. */
 static void list_with_finding(int ac, char **av) {
   char *full, *sql, *extra, *stamp;
-  sqlite3_stmt *cmd_stmt;
+  SqlCtx *ctx;
   int i, n, found;
   Result *res = 0;
   int nres = 0, nshown = 0;
@@ -113,23 +113,23 @@ static void list_with_finding(int ac, char **av) {
     free(extra);
   }
   sql = xstrcat(sql, " ORDER BY cmd.timestamp");
-  cmd_stmt = sqlprepare(sql);
 
   for (i = 0; i < ac; i++) {
     msg("looking for [%s]", av[i]);
-    sqlbindstring(cmd_stmt, av[i], 0);
-    while (sqlstep(cmd_stmt) == SQLITE_ROW) {
+    ctx = sqlnew(sql, 1,
+                 STR, av[i]);
+    while (sqlrun(ctx) == SQLITE_ROW) {
       found = 0;
       for (n = 0; n < nres; n++)
-        if (res[n].cmd_id    == sqlite3_column_int(cmd_stmt, 0) &&
-            res[n].timestamp == sqlite3_column_int(cmd_stmt, 1)) {
+        if (res[n].cmd_id    == sqlcolint(ctx, 0) &&
+            res[n].timestamp == sqlcolint(ctx, 1)) {
           res[n].hitcount++;
           found++;
         }
       if (!found) {
         res = (Result *) xrealloc(res, (nres + 1) * sizeof(Result));
-        res[nres].cmd_id = sqlite3_column_int(cmd_stmt, 0);
-        res[nres].timestamp = sqlite3_column_int(cmd_stmt, 1);
+        res[nres].cmd_id    = sqlcolint(ctx, 0);
+        res[nres].timestamp = sqlcolint(ctx, 1);
         res[nres].hitcount = 1;
         nres++;
       }
@@ -140,7 +140,7 @@ static void list_with_finding(int ac, char **av) {
       free(stamp);
     }
   }
-  sqlite3_finalize(cmd_stmt);
+  sqlend(ctx);
 
   /* Sort the results by timestamp. */
   qsort(res, nres, sizeof(Result), compar);

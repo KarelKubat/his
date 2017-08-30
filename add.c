@@ -2,28 +2,31 @@
 
 /* We had an insert. Create or update the count in the housekeeping table. */
 static void increment_inserts_count() {
-  char **res;
-  char *sql;
+  SqlCtx *readctx, *writectx;
 
-  res = sqlrun("SELECT insert_count FROM housekeeping");
-  if (!res) {
-    sqlrun("INSERT INTO housekeeping (insert_count) VALUES (1)");
-    insert_count = 1;
-  } else {
-    insert_count = atoi(*res) + 1;
-    sql = xsprintf("UPDATE housekeeping SET insert_count=%d", insert_count);
-    sqlrun(sql);
-    free(sql);
-  }
+  readctx = sqlnew("SELECT insert_count FROM housekeeping", 0);
+  if (sqlrun(readctx) == SQLITE_ROW)
+    writectx = sqlnew("UPDATE housekeeping SET insert_count = ?",
+                      1,
+                      INT, sqlcolint(readctx, 0) + 1);
+  else
+    writectx = sqlnew("INSERT INTO housekeeping (insertcount) "
+                      "VALUES ?",
+                      1,
+                      INT, 1);
+  sqlrun(writectx);
+
+  sqlend(readctx);
+  sqlend(writectx);
 }
 
 void add(int ac, char **av) {
   CmdToAdd cmd;
-  char **sqlret;
-  char *sql, *str_stamp;
-  time_t found_timestamp;
+  char *str_stamp;
   int next_cmd_id, i, args_id;
   Args args;
+  SqlCtx *readctx, *writectx;
+  int found_cmd_id;
 
   /* In multiargs mode, we want at least some form of a timestamp and
      a command. In singleargs mode, we want exactly one arg. */
@@ -53,54 +56,66 @@ void add(int ac, char **av) {
      If we already know a db entry with the same hash (but a different
      timestamp), then we can just duplicate it in the cmd table and be
      done. */
-  sql = xsprintf("SELECT cmd_id, timestamp "
-                 "FROM   cmd "
-                 "WHERE  hash = %d", cmd.hash);
-  sqlret = sqlrun(sql);
-  free(sql);
-  if (sqlret) {
-    for (i = 0; sqlret[i]; i += 2) {
-      found_timestamp = atoi(sqlret[i + 1]);
-      str_stamp = gm_timestamp(found_timestamp);
-      if (found_timestamp == cmd.timestamp) {
-        msg("entry with hash=%d was already added at timestamp=%s",
-            cmd.hash, str_stamp);
-        free(str_stamp);
-        return;
-      }
+  readctx = sqlnew("SELECT cmd_id, timestamp "
+                   "FROM   cmd "
+                   "WHERE  hash = ?",
+                   1,
+                   INT, cmd.hash);
+  found_cmd_id = 0;
+  while ( (sqlrun(readctx) == SQLITE_ROW) ) {
+    found_cmd_id = sqlcolint(readctx, 0);
+    if (sqlcolint(readctx, 1) == cmd.timestamp) {
+      str_stamp = gm_timestamp(cmd.timestamp);
+      msg("entry with hash %d was already added at timestamp %s",
+          cmd.hash, str_stamp);
+      free(str_stamp);
+      sqlend(readctx);
+      return;
     }
-    msg("identical entry occurs at a different stamp, duplicating",
-        str_stamp);
-    free(str_stamp);
-    sql = xsprintf("INSERT INTO cmd (cmd_id, hash, timestamp) "
-                   "VALUES (%d, %d, %d)",
-                   atoi(sqlret[0]), cmd.hash, cmd.timestamp);
-    sqlrun(sql);
-    free(sql);
+  }
+  sqlend(readctx);
+
+  if (found_cmd_id) {
+    msg("identical entry occurs at a different stamp, duplicating");
+    writectx = sqlnew("INSERT INTO cmd (cmd_id, hash, timestamp) "
+                      "VALUES (?, ?, ?)",
+                      3,
+                      INT, found_cmd_id,
+                      INT, cmd.hash,
+                      INT, cmd.timestamp);
+    sqlrun(writectx);
+    sqlend(writectx);
     increment_inserts_count();
     return;
   }
 
   /* Nope, didn't find it. Will need to add. */
   /* Find the next cmd_id to use. */
-  sql = (char*)"SELECT MAX(cmd_id) FROM cmd";
-  if (! (sqlret = sqlrun(sql)) )
+  readctx = sqlnew("SELECT MAX(cmd_id) FROM cmd", 0);
+  if (sqlrun(readctx) == SQLITE_ROW)
+    next_cmd_id = sqlcolint(readctx, 0) + 1;
+  else
     next_cmd_id = 1;
-  else {
-    next_cmd_id = atoi(sqlret[0]) + 1;
-  }
   msg("entry will be added at cmd_id=%d", next_cmd_id);
-  sql = xsprintf("INSERT INTO cmd (cmd_id, hash, timestamp) "
-                 "VALUES (%d, %d, %d)", next_cmd_id, cmd.hash, cmd.timestamp);
-  sqlrun(sql);
-  free(sql);
+  writectx = sqlnew("INSERT INTO cmd (cmd_id, hash, timestamp) "
+                    "VALUES (?, ?, ?)",
+                    3,
+                    INT, next_cmd_id,
+                    INT, cmd.hash,
+                    INT, cmd.timestamp);
+  sqlrun(writectx);
+  sqlend(writectx);
 
   for (i = 0; i < cmd.ac; i++) {
     args_id = lookup_arg(cmd.av[i]);
-    sql = xsprintf("INSERT INTO crossref (cmd_id, args_id, position) "
-                   "VALUES (%d, %d, %d)", next_cmd_id, args_id, i);
-    sqlrun(sql);
-    free(sql);
+    writectx = sqlnew("INSERT INTO crossref (cmd_id, args_id, position) "
+                      "VALUES (?, ?, ?)",
+                      3,
+                      INT, next_cmd_id,
+                      INT, args_id,
+                      INT, i);
+    sqlrun(writectx);
+    sqlend(writectx);
   }
 
   increment_inserts_count();

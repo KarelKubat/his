@@ -11,22 +11,7 @@ What it's about
 
     With his you can. It stores each command that you enter in a database,
     right as the next prompt appears. The history list is immediately
-    searchable.
-
-Compiling
----------
-
-    In general it should be enough to type 'make', which creates a local binary
-    'his'. Next type 'make install' which puts his in your private binq
-    directory (under $HOME). Or use 'BINDIR=/what/ever make install' to install
-    to /what/ever.
-
-    The code depends on sqlite3, and you need to have the headers and the
-    development lib available during compilation and linking. On debian-based
-    systems, you may need to 'sudo apt-get install libsqlite-dev'. Whichever
-    distribution you use, make sure that #include <sqlite3.h> works and that
-    -lsqlite3 finds libsqlite3.a. If you have different paths, then you might
-    need to adapt the Makefile.
+    searchable - independent of your terminal or shell session.
 
 General Usage
 -------------
@@ -82,7 +67,8 @@ General Usage
     will only log it as occurring at different timestamps; it won't duplicate
     everything. This even holds true for arguments (parts of a command
     line). E.g., two commands `ls -l /tmp' and 'ls -l /usr' will be stored by
-    re-using the parts 'ls' and '-l'. See also the data model section below.
+    re-using the parts 'ls' and '-l'. See also DATAMODEL.txt in the
+    distribution archive.
 
   Importing
   ---------
@@ -137,51 +123,3 @@ Making --add work automatically
     In this case, this is an invoction to 'his --add' using addition format 3
     (try 'his --list-formats' to see what that is). The information to add is
     the UTC timestamp in seconds and the previous command ($_).
-
-Data model and storage
-----------------------
-
-    his tries to be smart about storing invocations, their arguments, and their
-    timestamps. There are three tables. You can inspect everything if you have
-    the CLI 'sqlite3' and when you run 'sqlite3 ~/.his.db' (assuming that you
-    are not overruling the default by having your own -d MYDB flag).
-
-    If you want to see what tables are created and exactly how, see file
-    createtables.txt in the source archive.
-
-    Here's a functional description of the tables:
-
-    1. Table CMD: What command was entered when?
-       - Column CMD_ID: an integer that is used to index table CROSSREF. It is
-         not unique; it may occur multiple times when the same command occurs
-         under different timestamps.
-       - Column TIMESTAMP: The timestamp at which this command occurred. If an
-         identical command is entered at a new timestamp (e.g. say you run "ls
-	 -l" at different times), then the same CMD_ID is used, but with a
-	 different TIMESTAMP.
-       - Column HASH: A hash computed over the full entered commmand, used to
-         identify previously stored commands so that de-duplication can be
-         applied.
-
-    2. Table ARGS: What args do we know?
-       - Column ARGS_ID: the auto-incremented ID of the row.
-       - Column ARG: one argument. E.g. a command 'ls -ltr /tmp' will cause 3
-         entries in ARGS: 'ls', '-ltr', and '/tmp'.
-
-    3. Table CROSSREF: binding the two together
-       This table links CMD entries to ARGS entries to make the picture
-       complete.
-       - Column CMD_ID:   references an entry in CMD, e.g. answering 'when was
-       	 this entered'.
-       - Column ARGS_ID:  references an argument in the stored command.
-       - Column POSITION: says which ARG_ID comes first, which comes second,
-         etc.
-       The whole idea of CROSSREF is to deduplicate ARGS. E.g., consider the
-       three commands:
-         ls -l /tmp
-	 ls -ltr
-	 ls /tmp
-       have only four distinct strings: "ls", "-l", "/tmp", and "-ltr". The
-       tables and their contents will in this case have 3 CMD rows, but only 4
-       ARGS rows. The crosstable CROSSREF defines which ARG-strings are bound
-       to which CMD and in which order.
