@@ -1,25 +1,35 @@
 # Makefile for his
 
+# --------------------------------------------------------------------------
+# Settings
+# --------------------------------------------------------------------------
+
 # Where does a default 'make install' put the binary.
 # Alternatively use: BINDIR=/what/ever make install
 BINDIR = $$HOME/bin
 
-VER = '1.00'
+VER    = '1.00'
 AUTHOR = 'Karel Kubat <karel@kubat.nl>'
-YEARS = '2017ff'
-URL = 'http://www.kubat.nl/pages/his'
+YEARS  = '2017ff'
+URL    = 'http://www.kubat.nl/pages/his'
 
-SRC = $(wildcard *.c)
-OBJ = $(SRC:.c=.o)
+SRC    = $(wildcard *.c)
+OBJ    = $(SRC:.c=.o)
 
+# --------------------------------------------------------------------------
+# Top level rules
+# --------------------------------------------------------------------------
+
+# No-op target to show help
 foo:
 	@cat COMPILING.txt
 	exit 1
 
-# Top level target, creates the binary 'his' in current directory
+# Creates the binary 'his' in current directory
 his: $(OBJ)
 	$(CC) -g -Wall -o $@ $(OBJ) -lsqlite3
 
+# Installs to $(BINDIR)
 install: his
 	install -s his $(BINDIR)
 	@echo
@@ -32,6 +42,14 @@ loadtest: local
 	perl loadtest.pl | tee /tmp/loadtest.out
 	@echo
 	@echo "Output is also in /tmp/loadtest.out"
+
+# Clean up
+clean:
+	rm -f his $(OBJ) usagetxt.h formatstxt.h createtablestxt.h readmetxt.h
+
+# --------------------------------------------------------------------------
+# Helper rules
+# --------------------------------------------------------------------------
 
 # Compilation rule
 %.o: %.c
@@ -48,10 +66,6 @@ createtablestxt.h: createtablestxt.txt Makefile
 	perl txt2h.pl $< $@ CREATETABLESTEXT 0
 readmetxt.h: README.txt Makefile
 	perl txt2h.pl $< $@ READMETEXT 0
-
-# Clean up
-clean:
-	rm -f his $(OBJ) usagetxt.h formatstxt.h createtablestxt.h readmetxt.h
 
 # Extra deps, due to generated .h files from .txt and data instantiation
 main.o: main.c his.h
