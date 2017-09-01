@@ -10,8 +10,8 @@ static void increment_inserts_count() {
                       1,
                       INT, sqlcolint(readctx, 0) + 1);
   else
-    writectx = sqlnew("INSERT INTO housekeeping (insertcount) "
-                      "VALUES ?",
+    writectx = sqlnew("INSERT INTO housekeeping (insert_count) "
+                      "VALUES (?)",
                       1,
                       INT, 1);
   sqlrun(writectx);
