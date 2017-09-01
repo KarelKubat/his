@@ -2,11 +2,12 @@ Welcome to his %s, a CLI history tracker and finder of old invocations.
 Copyright (c) %s. %s. Distributed under GNU GPLV3.
 See %s for more info. Use his as follows:
 
-his [--flags] ARGS
-  Displays history having ARGS. Use 'what' to exactly match, or 'what%%' to
-  match anything starting with what, or '%%what' for anything ending in what,
-  or '%%what%%' for whatever has what in it, or '__at' for anything that is 4
-  characters long and ends with at.
+his [--flags] [ARGS]
+
+  Displays history having ARGS or the last entered ones. Use 'what' to exactly
+  match, or 'what%%' to match anything starting with what, or '%%what' for
+  anything ending in what, or '%%what%%' for whatever has what in it, or '__at'
+  for anything that is 4 characters long and ends with at.
 
   Use flags --first=FROM and --last=TO if you want to time-limit.
   Use flag --count=NR to limit the displayed entries, default is 20 last.
