@@ -11,6 +11,7 @@ void sqlinit() {
   struct stat statbuf;
   int db_exists;
   SqlCtx *ctx;
+  char *errmsg;
 
   if (dbconn)
     return;
@@ -22,13 +23,13 @@ void sqlinit() {
     /* Tables have already been set up. */
     msg("db %s already exists (with size %d)", db, statbuf.st_size);
   else {
-    /* Create the tables. */
+    /* Create the tables. We don't do this with sqlnew()/sqlrun() because
+       there are multiple SQL statements. */ 
     msg("creating db %s and its tables", db);
-    ctx = sqlnew(CREATETABLESTEXT, 0);
-    sqlrun(ctx);
-    sqlend(ctx);
+    if (sqlite3_exec(dbconn, CREATETABLESTEXT, 0, 0, &errmsg) != SQLITE_OK)
+	error("failed to create tables: %s", errmsg);
   }
-
+  
   /* Start a sqlite3 transaction. An error will roll back, a successful
      finish of main() will commit. */
   ctx = sqlnew("BEGIN TRANSACTION", 0);

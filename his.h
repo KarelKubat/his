@@ -17,7 +17,7 @@
 /* Type for a parsed command to add. */
 typedef struct {
   time_t timestamp;
-  int hash;
+  char *hash;
   int ac;
   char **av;
 } CmdToAdd;
@@ -71,6 +71,7 @@ extern void find(int ac, char **av);
 extern char *full_command(int ac, char **av);
 extern time_t gm_mktime(struct tm *t);
 extern char *gm_timestamp(time_t t);
+extern char *hash_string(char const *s);
 extern void import_cmds(void);
 extern void list_formats(void);
 extern int lookup_arg(char const *arg);

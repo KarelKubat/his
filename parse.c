@@ -1,17 +1,5 @@
 #include "his.h"
 
-/* https://en.wikipedia.org/wiki/PJW_hash_function */
-static int hashpjw(char const *s) {
-  unsigned long h = 0, high;
-  while (*s) {
-    h = (h << 4) + *s++;
-    if ( (high = h & 0xf0000000) )
-      h ^= high >> 24;
-    h &= ~high;
-  }
-  return (int)h;
-}
-
 static void check_ac(int ac, int required) {
   if (ac < required)
     error("there are not enough parameters, (at least) %d required", required);
@@ -130,8 +118,8 @@ void parse(int ac, char **av, CmdToAdd *cmd) {
 
   full = full_command(cmd->ac, cmd->av);
   stamp = gm_timestamp(cmd->timestamp);
-  cmd->hash = hashpjw(full);
-  msg("cmd parsed: timestamp=%s, cmd=[%s], hash=%d", stamp, full, cmd->hash);
+  cmd->hash = hash_string(full);
+  msg("cmd parsed: timestamp=%s, cmd=[%s], hash=[%s]", stamp, full, cmd->hash);
   free(full);
   free(stamp);
 }

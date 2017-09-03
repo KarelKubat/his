@@ -1,7 +1,7 @@
 CREATE TABLE cmd (
     cmd_id    INTEGER NOT NULL,
     timestamp INTEGER NOT NULL,
-    hash      INTEGER NOT NULL,
+    hash      TEXT NOT NULL,
     UNIQUE    (cmd_id, timestamp, hash)
 );
 CREATE INDEX cmd_id_index ON cmd (cmd_id);

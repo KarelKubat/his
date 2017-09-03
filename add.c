@@ -66,7 +66,7 @@ void add(int ac, char **av) {
     found_cmd_id = sqlcolint(readctx, 0);
     if (sqlcolint(readctx, 1) == cmd.timestamp) {
       str_stamp = gm_timestamp(cmd.timestamp);
-      msg("entry with hash %d was already added at timestamp %s",
+      msg("entry with hash [%s] was already added at timestamp %s",
           cmd.hash, str_stamp);
       free(str_stamp);
       sqlend(readctx);
@@ -101,7 +101,7 @@ void add(int ac, char **av) {
                     "VALUES (?, ?, ?)",
                     3,
                     INT, next_cmd_id,
-                    INT, cmd.hash,
+                    STR, cmd.hash,
                     INT, cmd.timestamp);
   sqlrun(writectx);
   sqlend(writectx);
