@@ -4,7 +4,7 @@ void show_command(int cmd_id, int timestamp) {
   char *line;
   SqlCtx *ctx;
 
-  line = gm_timestamp(timestamp);
+  line = timestamp2str(timestamp);
   ctx = sqlnew("SELECT   arg from cmd, args, crossref "
                "WHERE    cmd.timestamp = ? AND cmd.cmd_id = ? "
                "AND      cmd.cmd_id = crossref.cmd_id "

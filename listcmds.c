@@ -135,7 +135,7 @@ static void list_with_finding(int ac, char **av) {
       }
     }
     for (n = 0; n < nres; n++) {
-      stamp = gm_timestamp(res[n].timestamp);
+      stamp = timestamp2str(res[n].timestamp);
       msg("ID %d at %s now has %d hits", res[n].cmd_id, stamp, res[n].hitcount);
       free(stamp);
     }

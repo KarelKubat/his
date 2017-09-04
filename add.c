@@ -60,12 +60,12 @@ void add(int ac, char **av) {
                    "FROM   cmd "
                    "WHERE  hash = ?",
                    1,
-                   INT, cmd.hash);
+                   STR, cmd.hash);
   found_cmd_id = 0;
   while ( (sqlrun(readctx) == SQLITE_ROW) ) {
     found_cmd_id = sqlcolint(readctx, 0);
     if (sqlcolint(readctx, 1) == cmd.timestamp) {
-      str_stamp = gm_timestamp(cmd.timestamp);
+      str_stamp = timestamp2str(cmd.timestamp);
       msg("entry with hash [%s] was already added at timestamp %s",
           cmd.hash, str_stamp);
       free(str_stamp);
@@ -81,7 +81,7 @@ void add(int ac, char **av) {
                       "VALUES (?, ?, ?)",
                       3,
                       INT, found_cmd_id,
-                      INT, cmd.hash,
+                      STR, cmd.hash,
                       INT, cmd.timestamp);
     sqlrun(writectx);
     sqlend(writectx);

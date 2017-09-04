@@ -10,7 +10,8 @@ his [--flags] [ARGS]
   for anything that is 4 characters long and ends with at.
 
   Use flags --first=FROM and --last=TO if you want to time-limit.
-  Use flag --count=NR to limit the displayed entries, default is 20 last.
+  Use flag  --count=NR to limit the displayed entries, default is 20 last.
+  Use flag  --utc to output timestams relative to GMT, default is local.
 
 his [--flags] -a,--add LINE
   Adds LINE to the history, see --list-formats for the supported parsing
@@ -18,8 +19,8 @@ his [--flags] -a,--add LINE
 
 his [--flags] -i,--import
   Import from stdin in the same format as a listing. Flags --first=FROM and
-  --last=TO can be used to limit what to import. Implies --format=2 and no
-  --multi-args.
+  --last=TO can be used to limit what to import. Implies --format=2.
+  Add flag --utc if the list to import was generated with --utc (recommended).
 
 his [--flags] -p,--purge
   Remove entries from the database. Flags -f,--first and -l,--last must be
@@ -38,6 +39,8 @@ Supported general flags:
   -m,--multi-args   : During --add, LINE is assumed to to have all args
                       separately (as in ls -Flag). Default is all in one string
                       (as in 'ls -Flag').
+  -u,--utc          : Timestamps in listed output or imported input are assumed
+                      UTC (default: local time)
   -v,--verbose      : Increases verbosity
   -h,-?,--help      : Shows this text and stops
   --                : Stops parsing flags. Very useful in

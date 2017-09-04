@@ -35,7 +35,7 @@ void purge() {
     cmd_id        = sqlcolint(readctx, 0);
     cmd_timestamp = sqlcolint(readctx, 1);
     args_id       = sqlcolint(readctx, 2);
-    stamp         = gm_timestamp(cmd_timestamp);
+    stamp         = timestamp2str(cmd_timestamp);
 
     msg("purge candidate: cmd_id=%d, args_id=%d, timestamp=%s",
         cmd_id, args_id, stamp);

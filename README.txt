@@ -41,8 +41,7 @@ General Usage
     using --first and --last. If you want to see only the last three
     occurrences, use --count=3 (shorthand -c3). Example:
         his --first=2017-01-01/00:00:00 --last=2017-01-01/01:00:00 ls
-    shows your 'ls' invocations during the first hour of the year 2017 in
-    the GMT timezone.
+    shows your 'ls' invocations during the first hour of the year 2017.
 
   What adding does
   ----------------
@@ -75,14 +74,15 @@ General Usage
 
     Exporting and listing can be used together, e.g. to sync lists between
     different machines:
-        his -c0 | ssh user@remotesystem his -i
+        his --count 0 --utc | ssh user@remotesystem his --utc --import
     (For a full export, you want --count=0 or -c0, since the arbitrary default
-    is 20.)
+    is 20. Adding --utc makes sure that timestamps are relative to UTC, so
+    that this works even across timezones.)
 
     Or, you can ask the 'remote side' what its most recent timestamp is, and
     export only from that point on:
-    	TIMESTAMP=$(ssh user@remotesystem his -c1 | awk '{print $1}')
-	his -f=${TIMESTAMP?} | ssh user@remotesystem his -i
+    	TIMESTAMP=$(ssh user@remotesystem his -c1 -u | awk '{print $1}')
+	his -u -f=${TIMESTAMP?} | ssh user@remotesystem his -u -i
     Here, flag -c1 means --count=1, which is: list only the one most recent
     command. Flag -f=${TIMESTAMP?} means: list entries on or after $TIMESTAMP.
 

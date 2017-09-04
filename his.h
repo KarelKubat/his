@@ -60,6 +60,7 @@ EXTERN int insert_count;       /* #inserts in the db, 0 if no inserts in run */
 EXTERN time_t last_timestamp;  /* Last timestamps when searching/dumping */
 EXTERN int format;             /* Selected format */
 EXTERN int multiargs;          /* --add should expect multi-args */
+EXTERN int utc_time;           /* List or import timestamps are UTC */
 EXTERN int verbose;            /* Verbosity or not */
 
 /* Functions */
@@ -70,7 +71,6 @@ extern void list_cmds(int ac, char **av);
 extern void find(int ac, char **av);
 extern char *full_command(int ac, char **av);
 extern time_t gm_mktime(struct tm *t);
-extern char *gm_timestamp(time_t t);
 extern char *hash_string(char const *s);
 extern void import_cmds(void);
 extern void list_formats(void);
@@ -88,6 +88,7 @@ extern const char *sqlcolstring(SqlCtx *ctx, int col);
 extern SqlCtx *sqlnew(char const *sql, int nbindings, ...);
 extern int sqlrun(SqlCtx *ctx);
 extern void sqlend(SqlCtx *ctx);
+extern char *timestamp2str(time_t t);
 extern void usage(void);
 extern void *xmalloc(size_t sz);
 extern void *xrealloc(void *what, size_t sz);

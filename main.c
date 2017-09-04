@@ -41,11 +41,12 @@ int main(int argc, char **argv) {
     { "multi-args",   0, 0, 'm' },
     { "purge",        0, 0, 'p' },
     { "readme",       0, 0, 'R' },
+    { "utc",          0, 0, 'u' },
     { "verbose",      0, 0, 'v' },
     { "help",         0, 0, 'h' },
     { 0,              0, 0,  0  },
   };
-  while ( (opt = getopt_long(argc, argv, "aAc:d:f:F:il:LmpRvh?",
+  while ( (opt = getopt_long(argc, argv, "aAc:d:f:F:il:LmpRvuh?",
                              flags, 0)) > 0 ) {
     switch (opt) {
 
@@ -124,6 +125,11 @@ int main(int argc, char **argv) {
       case 'R':
         /* Show readme and stop */
         readme();
+        break;
+
+      case 'u':
+        /* Import or export timestamps are UTC */
+        utc_time++;
         break;
 
       case 'v':

@@ -3,6 +3,7 @@
 time_t str2timestamp(char const *s) {
   int year, month, day, hour, min, sec;
   struct tm stm;
+  time_t ret;
 
   if (sscanf(s, "%4d-%2d-%2d/%2d:%2d:%2d",
              &year, &month, &day, &hour, &min, &sec) < 6)
@@ -14,5 +15,14 @@ time_t str2timestamp(char const *s) {
   stm.tm_hour = hour;
   stm.tm_min  = min;
   stm.tm_sec  = sec;
-  return gm_mktime(&stm);
+
+  if (utc_time)
+    ret = gm_mktime(&stm);
+  else
+    ret = mktime(&stm);
+
+  msg("timestring [%s] in %s: timestamp %d",
+      s, utc_time? "UTC" : "localtime", ret);
+  return ret;
+
 }

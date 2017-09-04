@@ -33,7 +33,7 @@ static void parse_format_1(int ac, char **av, CmdToAdd *cmd) {
       error("expected HH:MM:DD or HH:MM:DD], got %s", av[2]);
     msg("HH:MM:SS: %2.2d:%2.2d:%2.2d", hour, min, sec);
     check_ac(ac, 4);
-    
+
     /* Expect the offset now as +HHMM or -HHMM. */
     if (sscanf(av[3], "%c%d%c", &ch1, &offset, &ch2) >= 3 &&
         ch1 == '+' && ch2 == ']') {
@@ -58,12 +58,12 @@ static void parse_format_1(int ac, char **av, CmdToAdd *cmd) {
   tm_stamp.tm_mon  = month - 1;
   tm_stamp.tm_year = year - 1900;
   cmd->timestamp = gm_mktime(&tm_stamp);
-  stamp1 = gm_timestamp(cmd->timestamp);
+  stamp1 = timestamp2str(cmd->timestamp);
   /* Offset +0230 means 2.5 hours, not 2.3 hours. */
   off_hrs = offset / 100;
   off_min = offset % 100;
   cmd->timestamp += off_hrs * 3600 + off_min * 60;
-  stamp2 = gm_timestamp(cmd->timestamp);
+  stamp2 = timestamp2str(cmd->timestamp);
 
   msg("parsed timestamp: %s, with offset calculation: %s", stamp1, stamp2);
   free(stamp1);
@@ -117,7 +117,7 @@ void parse(int ac, char **av, CmdToAdd *cmd) {
   }
 
   full = full_command(cmd->ac, cmd->av);
-  stamp = gm_timestamp(cmd->timestamp);
+  stamp = timestamp2str(cmd->timestamp);
   cmd->hash = hash_string(full);
   msg("cmd parsed: timestamp=%s, cmd=[%s], hash=[%s]", stamp, full, cmd->hash);
   free(full);

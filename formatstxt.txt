@@ -18,8 +18,8 @@ Available formats are identified by a number. Available are:
                                    UTC)
 
 --format=2, -F2:
-  Selects the format that is also used during listing and --import: a UTC
-  date/time and the command. Example:
+  Selects the format that is also used during listing and during --import:
+  a local-time date/time and the command. With flag --utc this is UTC. Example:
     2017-08-15/05:33:47 cat /tmp/myfile.c
 
 --format=3, -F3:
