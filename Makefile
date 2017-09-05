@@ -45,6 +45,10 @@ loadtest: his
 	@echo
 	@echo "Output is also in /tmp/loadtest.out"
 
+upload: clean
+	(cd ..; tar czf /tmp/his.tar.gz his/)
+	scp /tmp/his.tar.gz www-data@kb:~/www.kubat.nl/www/
+
 # Clean up
 clean:
 	rm -f his $(OBJ) usagetxt.h formatstxt.h createtablestxt.h readmetxt.h
