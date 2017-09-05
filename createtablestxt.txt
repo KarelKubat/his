@@ -4,14 +4,15 @@ CREATE TABLE cmd (
     hash      TEXT NOT NULL,
     UNIQUE    (cmd_id, timestamp, hash)
 );
-CREATE INDEX cmd_id_index ON cmd (cmd_id);
-CREATE INDEX cmd_id_timestamp_index ON cmd (cmd_id, timestamp);
+CREATE INDEX cmd_id_index           ON cmd(cmd_id);
+CREATE INDEX cmd_timestamp_index    ON cmd(timestamp);
+CREATE INDEX cmd_id_timestamp_index ON cmd(cmd_id, timestamp);
 
 CREATE TABLE args (
     args_id INTEGER PRIMARY KEY AUTOINCREMENT,
     arg     TEXT NOT NULL UNIQUE
 );
-CREATE INDEX args_index ON args(arg);
+CREATE INDEX args_id_index ON args(arg);
 
 CREATE TABLE crossref (
     cmd_id   INTEGER,
@@ -20,6 +21,8 @@ CREATE TABLE crossref (
     FOREIGN  KEY(cmd_id)  REFERENCES cmd(cmd_id),
     FOREIGN  KEY(args_id) REFERENCES args(args_id)
 );
+CREATE INDEX crossref_cmd_id_index  ON crossref(cmd_id);
+CREATE INDEX crossref_args_id_index ON crossref(args_id);
 
 CREATE TABLE housekeeping (
     insert_count INTEGER
