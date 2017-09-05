@@ -8,6 +8,8 @@
 # Alternatively use: BINDIR=/what/ever make install
 BINDIR = $$HOME/bin
 
+# Versioning.
+# [KK 2017-09-05] Initial version.
 VER    = '1.00'
 AUTHOR = 'Karel Kubat <karel@kubat.nl>'
 YEARS  = '2017ff'
@@ -36,7 +38,7 @@ install: his
 	@echo 'Installation successful, $(BINDIR)/his can be used'
 
 # Loadtest some random stuff
-loadtest: local
+loadtest: his
 	install -s his /tmp
 	rm -f /tmp/loadtest.out
 	perl loadtest.pl | tee /tmp/loadtest.out
