@@ -145,13 +145,30 @@ static void list_with_finding(int ac, char **av) {
   /* Sort the results by timestamp. */
   qsort(res, nres, sizeof(Result), compar);
 
-  for (n = 0; n < nres; n++)
-    if (res[n].hitcount == ac) {
-      show_command(res[n].cmd_id, res[n].timestamp);
-      nshown++;
-      if (count && nshown >= count)
-        break;
+  /* Remove entries that don't hit all required args, ie. entries
+     where hitcount < ac
+  */
+  n = 0;
+  while (n < nres)
+    if (res[n].hitcount < ac) {
+      memmove(res + n, res + n + 1, (nres - n - 1) * sizeof(Result));
+      nres--;
+    } else {
+      n++;
     }
+
+  /* Display starts at 0 if:
+     - There is no count specified
+     - There is a count specified, but we have less hits (nres)
+     Else, display starts at nres-count
+  */
+  if (!count || nres - count <= 0)
+    n = 0;
+  else
+    n = nres - count;
+  for (; n < nres; n++)
+    if (res[n].hitcount == ac)
+      show_command(res[n].cmd_id, res[n].timestamp);
   free(res);
 }
 

@@ -8,7 +8,10 @@
 # Alternatively use: BINDIR=/what/ever make install
 BINDIR = $$HOME/bin
 
-VER    = '1.00'
+# Versioning
+# 1.00 [2017-09-01] First version
+# 1.01 [2017-09-08] Bugfix in listcmd.c 
+VER    = '1.01'
 AUTHOR = 'Karel Kubat <karel@kubat.nl>'
 YEARS  = '2017ff'
 URL    = 'http://www.kubat.nl/pages/his'
