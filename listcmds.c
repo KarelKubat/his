@@ -86,7 +86,7 @@ static int compar(const void *a, const void *b) {
 
 /* The invocation was with args to find. */
 static void list_with_finding(int ac, char **av) {
-  char *full, *sql, *extra, *stamp;
+    char *full, *sql, *extra, *stamp, *stringop;
   SqlCtx *ctx;
   int i, n, found;
   Result *res = 0;
@@ -96,11 +96,19 @@ static void list_with_finding(int ac, char **av) {
   msg("filtering for [%s]", full);
   free(full);
 
-  sql = xstrdup("SELECT cmd.cmd_id, cmd.timestamp "
-                "FROM   cmd, crossref, args "
-                "WHERE  cmd.cmd_id = crossref.cmd_id "
-                "AND    crossref.args_id = args.args_id "
-                "AND    args.arg LIKE ?");
+  /* SQL string operator is '=' unless we have a % or _ in the given name. */
+  stringop = "=";
+  for (i = 0; i < ac; i++)
+      if (strchr(av[i], '%') || strchr(av[i], '_')) {
+	  stringop = "LIKE";
+	  break;
+      }
+  
+  sql = xsprintf("SELECT cmd.cmd_id, cmd.timestamp "
+		 "FROM   cmd, crossref, args "
+                 "WHERE  cmd.cmd_id = crossref.cmd_id "
+		 "AND    crossref.args_id = args.args_id "
+		 "AND    args.arg %s ?", stringop);
   if (first_timestamp) {
     extra = xsprintf(" AND cmd.timestamp >= %d", first_timestamp);
     sql = xstrcat(sql, extra);
