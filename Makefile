@@ -13,7 +13,9 @@ BINDIR = $$HOME/bin
 # 1.01 [2017-09-08] Bugfix in listcmd.c 
 # 1.02 [2017-09-10] SQL string comparison in listcmd.c defaults to '=' unless
 #                   %/_ wildcards  are used, then the comparison becomes 'LIKE'
-VER    = '1.02'
+# 1.03 [KK 2017-10-04] 1.01 Added db locked retries
+
+VER    = '1.03'
 AUTHOR = 'Karel Kubat <karel@kubat.nl>'
 YEARS  = '2017ff'
 URL    = 'http://www.kubat.nl/pages/his'
