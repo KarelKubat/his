@@ -55,7 +55,6 @@ his
 
 # 'ls' invocations during the first hour of the year 2017.
 his --first=2017-01-01/00:00:00 --last=2017-01-01/01:00:00 ls
-```
 
 # Last 50 invocations
 his -c50
