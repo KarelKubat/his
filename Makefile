@@ -6,19 +6,20 @@
 
 # Where does a default 'make install' put the binary.
 # Alternatively use: BINDIR=/what/ever make install
-BINDIR = $$HOME/bin
+BINDIR ?= $$HOME/bin
 
 # Versioning.
 # 1.00 [2017-09-01] First version
 # 1.01 [2017-09-08] Bugfix in listcmd.c 
 # 1.02 [2017-09-10] SQL string comparison in listcmd.c defaults to '=' unless
 #                   %/_ wildcards  are used, then the comparison becomes 'LIKE'
-# 1.03 [KK 2017-10-04] 1.01 Added db locked retries
+# 1.03 [KK 2017-10-04] Added db locked retries
+# 1.04 [KK 2017-10-04] BINDIR=... make install honors the bindir
 
-VER    = '1.03'
+VER    = '1.04'
 AUTHOR = 'Karel Kubat <karel@kubat.nl>'
 YEARS  = '2017ff'
-URL    = 'http://www.kubat.nl/pages/his'
+URL    = 'https://github.com/KarelKubat/his'
 
 SRC    = $(wildcard *.c)
 OBJ    = $(SRC:.c=.o)
@@ -38,6 +39,7 @@ his: $(OBJ)
 
 # Installs to $(BINDIR)
 install: his
+	mkdir -p $(BINDIR)
 	install -s his $(BINDIR)
 	@echo
 	@echo 'Installation successful, $(BINDIR)/his can be used'
