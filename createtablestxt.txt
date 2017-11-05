@@ -12,8 +12,8 @@ CREATE TABLE args (
     args_id INTEGER PRIMARY KEY AUTOINCREMENT,
     arg     TEXT NOT NULL UNIQUE
 );
-CREATE INDEX args_id_index ON args(args.arg_id);
-CREATE INDEX args_arg ON args(args.arg);
+CREATE INDEX args_id_index ON args(args_id);
+CREATE INDEX args_arg      ON args(arg);
 
 CREATE TABLE crossref (
     cmd_id   INTEGER,
