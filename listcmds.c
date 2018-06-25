@@ -90,7 +90,7 @@ static void list_with_finding(int ac, char **av) {
   SqlCtx *ctx;
   int i, n, found;
   Result *res = 0;
-  int nres = 0, nshown = 0;
+  int nres = 0;
 
   full = full_command(ac, av);
   msg("filtering for [%s]", full);
@@ -103,7 +103,7 @@ static void list_with_finding(int ac, char **av) {
 	  stringop = "LIKE";
 	  break;
       }
-  
+
   sql = xsprintf("SELECT cmd.cmd_id, cmd.timestamp "
 		 "FROM   cmd, crossref, args "
                  "WHERE  cmd.cmd_id = crossref.cmd_id "
