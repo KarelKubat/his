@@ -48,8 +48,7 @@ me:
 	@true
 a:
 	@true
-sandwich:
-	install
+sandwich: install
 
 # Loadtest some random stuff
 loadtest: his
