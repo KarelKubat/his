@@ -26,9 +26,6 @@ his [--flags] -p,--purge
   Remove entries from the database. Flags -f,--first and -l,--last must be
   given to avoid mistakenly removing everything.
 
-his -R
-  Shows the README and stops.
-
 Supported general flags:
   -d,--db=DB        : Sets Sqlite3 database path, default is $HOME/.his.db
   -f,--first=STAMP  : Limits exports and searches to later or equal to STAMP,

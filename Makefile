@@ -64,7 +64,7 @@ upload: clean
 
 # Clean up
 clean:
-	rm -f his $(OBJ) usagetxt.h formatstxt.h createtablestxt.h readmetxt.h
+	rm -f his $(OBJ) usagetxt.h formatstxt.h createtablestxt.h
 
 # --------------------------------------------------------------------------
 # Helper rules
@@ -83,8 +83,6 @@ formatstxt.h: formatstxt.txt Makefile
 	perl txt2h.pl $< $@ FORMATSTEXT 1
 createtablestxt.h: createtablestxt.txt Makefile
 	perl txt2h.pl $< $@ CREATETABLESTEXT 0
-readmetxt.h: README.txt Makefile
-	perl txt2h.pl $< $@ READMETEXT 0
 
 # Extra deps, due to generated .h files from .txt and data instantiation
 main.o: main.c his.h
