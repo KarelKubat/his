@@ -42,6 +42,13 @@ install: his
 	@echo
 	@echo 'Installation successful, $(BINDIR)/his can be used'
 
+me:
+	@true
+a:
+	@true
+sandwich:
+	install
+
 # Loadtest some random stuff
 loadtest: his
 	install -s his /tmp
