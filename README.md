@@ -12,6 +12,13 @@ With `his` you can. It stores each command that you enter in a database, right
 as the next prompt appears. The history list is immediately searchable -
 independent of your terminal or shell session.
 
+Further reading:
+
+*  [COMPILING.md](COMPILING.md): how to compile and install `his`
+*  [DATAMODEL.md](DATAMODEL.md): if you want to know about the internal data
+   model
+*  [SQL.md](SQL.md): if you want to know how SQL is handled programmatically
+
 ## General Usage
 
 `his` is self-describing, in the sense that if you type either of
