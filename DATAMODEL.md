@@ -47,8 +47,9 @@ Here's a functional description of the tables:
    ls -l /tmp
    ls -ltr
    ls /tmp
+   ```
 
-   have only four distinct strings: "ls", "-l", "/tmp", and "-ltr". The
+   These have only four distinct strings: "ls", "-l", "/tmp", and "-ltr". The
    tables and their contents will in this case have 3 `cmd` rows, but only 4
    `args` rows. The crosstable `crossref` defines which `arg`-strings are bound
    to which `cmd` and in which order.
