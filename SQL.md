@@ -49,7 +49,7 @@ Example:
 while (sqlrun(ctx) == SQLITE_ROW) {
     int  someint     = sqlcolint(ctx, 0);
     char *somestring = sqlcolstring(ctx, 1);
-	...
+    ...
 }
 ```
 
@@ -68,12 +68,12 @@ errors-out.
 ```c
 ctx = sqlnew("INSERT INTO mytable "
                  "(someint, somestring, fullname, unix_timestamp) "
-  	  	     "VALUES (?, ?, ?, ?)",
-		     4,                       // 4 bindings to follow
-		     INT, 12,                 // 1: an int
-		     STR, "hello world",      // 2: a string
-		     STR, "Jane Doe",         // 3: a string
-		     INT, time());            // 4: an int
+             "VALUES (?, ?, ?, ?)",
+             4,                       // 4 bindings to follow
+             INT, 12,                 // 1: an int
+             STR, "hello world",      // 2: a string
+             STR, "Jane Doe",         // 3: a string
+             INT, time());            // 4: an int
 sqlrun(ctx);
 sqlend(ctx);
 ```
@@ -82,7 +82,7 @@ sqlend(ctx);
 
 Don't be afraid to run `sqlnew()` for the same SQL string over and over again,
 so it can be bound to different variables. Internally, the prepared statement is
-cached and reused. So sqlnew() will only prepare the statement when the sql is
+cached and reused. So `sqlnew()` will only prepare the statement when the sql is
 seen for the first time; otherwise, only bindings are performed.
 
 ## What Is Missing
