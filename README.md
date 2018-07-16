@@ -12,6 +12,8 @@ With `his` you can. It stores each command that you enter in a database, right
 as the next prompt appears. The history list is immediately searchable -
 independent of your terminal or shell session.
 
+[TOC]
+
 Further reading:
 
 *  [COMPILING.md](COMPILING.md): how to compile and install `his`
@@ -190,3 +192,13 @@ tcsh will happily run the precmd alias before displaying the next prompt.
 In this case, this is an invoction to `his --add` using addition format 3
 (try `his --list-formats` to see what that is). The information to add is
 the UTC timestamp in seconds and the previous command (`$_`).
+
+## Importing your existing Bash history
+
+By default, `bash` stores its history in a file `~/.bash_history`. If you want
+to import this list into the database that `his` maintains, simply install `his`
+and run the provided Perl script `import-bash-history.pl` as follows:
+
+```shell
+perl import-bash-history.pl ~/.bash_history
+```
