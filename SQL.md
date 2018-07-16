@@ -4,6 +4,10 @@ The `his` package contains useful wrappers for sqlite3. You might want to
 repurpose it for your own programs, or you might want to know how it works
 incase you want to extend `his`. Here's how it works.
 
+NOTE: If you are looking for a more "mature" generalized sqlite abstraction,
+though for C++ and not for C, then check out my
+[dbcpp](https://github.com/KarelKubat/dbcpp) package.
+
 ## General Flow
 
 After initialization, run `sqlnew()` to obtain a context that is re-used for
