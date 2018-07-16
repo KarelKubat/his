@@ -6,12 +6,13 @@ In general it should be enough to type
 make his
 ```
 
-which creates a local binary 'his'.
+which creates a local binary `his`.
 
 Next type
 
 ```shell
 make install
+# or 'make me a sandwich', if you feel so inclined
 ```
 
 which puts his in your private bin directory (under $HOME). Or use
