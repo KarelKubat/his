@@ -16,7 +16,7 @@ independent of your terminal or shell session.
 
 `his` is self-describing, in the sense that if you type either of
 
-``` shell
+```shell
 his --help
 his -h
 his -?
@@ -28,7 +28,7 @@ then you will see what flags and arguments are supported.
 
 Typing just
 
-``` shell
+```shell
 his
 ```
 
@@ -38,7 +38,7 @@ providing a timeframe (`--first` and `--last`) and/or a count (`--count`).
 
 To find specific commands, use the form
 
-``` shell
+```shell
 his ARG1 ARG2 ARG3
 ```
 
@@ -49,7 +49,7 @@ sqlite3, knows about them). Searching can be limited to a given date/time
 using `--first` and `--last`. If you want to see only the last three
 occurrences, use `--count=3` (shorthand -`c3`). Examples:
 
-``` shell
+```shell
 # Last 20 invocations (20 is the default)
 his
 
@@ -86,14 +86,9 @@ provided that you supply the right 'parsing format'. This is how his pulls out
 a timestamp and previous commandline from its arguments. The default parsing
 format is the one that bash uses when you
 
-``` shell
+```shell
 export HISTTIMEFORMAT="[%Y-%m-%d %H:%M:%S %z] "
 ```
-
-Normally his won't store its own invocations (i.e., anything that starts with
-`his`); it only pollutes the saved list. If you want to, you can use flag
-`--accept-his` when adding commands to make sure that even such invocations end
-up in the list.
 
 Adding is 'smart' in the sense that it doesn't duplicate already present
 entries. So you can enter the same command over and over again and `his` will
@@ -102,12 +97,35 @@ everything. This even holds true for arguments (parts of a command line). E.g.,
 two commands `ls -l /tmp'` and `ls -l /usr` will be stored by re-using the
 parts `ls` and `-l`. See also DATAMODEL.md in the distribution archive.
 
+### What's Not Added
+
+Normally his won't store its own invocations (i.e., anything that starts with
+`his`); it only pollutes the saved list. If you want to, you can use flag
+`--accept-his` or `-A` when adding commands to make sure that even such
+invocations end up in the list. Example:
+
+```shell
+his                         # won't get added to the history db
+his -A                      # will get added to the history db
+```
+
+Furthermore (similar to `bash`): if you set `$HISTIGNORE` to a colon-separated
+list of commands, then they also won't get stored. Example:
+
+```shell
+# Never store invocations of 'ls' or 'cat'
+export HISTIGNORE="ls:cat"
+
+ls ~/src                    # won't get added to the history db
+cat ~/src/myprog.c          # won't get added to the history db
+```
+
 ## Importing and Listing
 
 Exporting and listing can be used together, e.g. to sync lists between
 different machines:
 
-``` shell
+```shell
 his --count 0 --utc | ssh user@remotesystem his --utc --import
 ```
 
@@ -133,7 +151,7 @@ command. Flag `-f=${TIMESTAMP?}` means: list entries on or after `$TIMESTAMP`.
 
 If your shell is bash, edit your `~/.profile` (or `~/.bashrc`) and put in:
 
-``` shell
+```shell
 function preprompt() {
     his --add -- "$(history 1)"
 }
@@ -157,7 +175,7 @@ $HOME/.his.db.
 
 For tcsh users, edit your ~/.cshrc and put in:
 
-``` shell
+```shell
 alias precmd 'his --multi-args --add --format=3 `date +%s` $_'
 ```
 

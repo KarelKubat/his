@@ -22,7 +22,7 @@ static void increment_inserts_count() {
 
 void add(int ac, char **av) {
   CmdToAdd cmd;
-  char *str_stamp;
+  char *str_stamp, *histignore, *tok;
   int next_cmd_id, i, args_id;
   Args args;
   SqlCtx *readctx, *writectx;
@@ -48,6 +48,19 @@ void add(int ac, char **av) {
   if (!accept_his && !strcmp(cmd.av[0], "his")) {
       msg("command to add starts with 'his', not storing");
       return;
+  }
+
+  /* Ignore whatever $HISTIGNORE holds, a-la bash */
+  if ( (histignore = getenv("HISTIGNORE")) ) {
+    tok = strtok(histignore, ":");
+    while (tok) {
+      if (!strcmp(cmd.av[0], tok)) {
+        msg("command to add starts with '%s', not storing due to $HISTIGNORE",
+            tok);
+        return;
+      }
+      tok = strtok(0, ":");
+    }
   }
 
   /* If we already know a db entry with the same timestamp and the

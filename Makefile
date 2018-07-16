@@ -15,8 +15,9 @@ BINDIR ?= $$HOME/bin
 #                   %/_ wildcards  are used, then the comparison becomes 'LIKE'
 # 1.03 [KK 2017-10-04] Added db locked retries
 # 1.04 [KK 2017-10-04] BINDIR=... make install honors the bindir
+# 1.05 [KK 2018-07-16] Added support for $HISTIGNORE
 
-VER    = '1.04'
+VER    = '1.05'
 AUTHOR = 'Karel Kubat <karel@kubat.nl>'
 YEARS  = '2017ff'
 URL    = 'https://github.com/KarelKubat/his'
