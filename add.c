@@ -52,6 +52,7 @@ void add(int ac, char **av) {
 
   /* Ignore whatever $HISTIGNORE holds, a-la bash */
   if ( (histignore = getenv("HISTIGNORE")) ) {
+    histignore = xstrdup(histignore);
     tok = strtok(histignore, ":");
     while (tok) {
       if (!strcmp(cmd.av[0], tok)) {
@@ -61,6 +62,7 @@ void add(int ac, char **av) {
       }
       tok = strtok(0, ":");
     }
+    free(histignore);
   }
 
   /* If we already know a db entry with the same timestamp and the
