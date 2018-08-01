@@ -12,6 +12,8 @@ With `his` you can. It stores each command that you enter in a database, right
 as the next prompt appears. The history list is immediately searchable -
 independent of your terminal or shell session.
 
+License: GPLv3, see `LICENSE.md`.
+
 [TOC]
 
 Further reading:
