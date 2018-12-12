@@ -40,13 +40,12 @@ int main(int argc, char **argv) {
     { "list-formats", 0, 0, 'L' },
     { "multi-args",   0, 0, 'm' },
     { "purge",        0, 0, 'p' },
-    { "readme",       0, 0, 'R' },
     { "utc",          0, 0, 'u' },
     { "verbose",      0, 0, 'v' },
     { "help",         0, 0, 'h' },
     { 0,              0, 0,  0  },
   };
-  while ( (opt = getopt_long(argc, argv, "aAc:d:f:F:il:LmpRvuh?",
+  while ( (opt = getopt_long(argc, argv, "aAc:d:f:F:il:Lmpvuh?",
                              flags, 0)) > 0 ) {
     switch (opt) {
 
@@ -120,11 +119,6 @@ int main(int argc, char **argv) {
       case 'p':
         /* Purge stuff */
         action = PURGE;
-        break;
-
-      case 'R':
-        /* Show readme and stop */
-        readme();
         break;
 
       case 'u':

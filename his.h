@@ -78,7 +78,6 @@ extern int lookup_arg(char const *arg);
 extern void msg(char const *fmt, ...);
 extern void parse(int ac, char **av, CmdToAdd *cmd);
 extern void purge(void);
-extern void readme(void);
 extern void show_command(int cmd_id, int timestamp);
 extern void str2args(char *s, Args *args);
 extern time_t str2timestamp(char const *s);

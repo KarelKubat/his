@@ -9,12 +9,15 @@ The FILE is usually ~/.bash_history.
 
 END
 
+my $consecutive_errors = 0;
 sub import_cmd($$) {
   my ($t, $c) = @_;
   return if (!$t or $c =~ m{^\s*$});
-  # print("[$t] $c\n");
-  system('his', '-a', '-d/tmp/bla', '-F3', "$t $c")
-    and warn("$t $c failed\n");
+  print("[$t] $c\n");
+  if (system('his', '-a', '-F3', "$t $c")) {
+    warn("$t $c failed\n");
+    die("too many errors\n") if (++$consecutive_errors > 10);
+  }
 } 
 
 open(my $if, $ARGV[0]) or die("Cannot read $ARGV[0]: $!\n");

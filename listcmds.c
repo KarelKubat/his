@@ -103,7 +103,7 @@ static void list_with_finding(int ac, char **av) {
 	  stringop = "LIKE";
 	  break;
       }
-  
+
   sql = xsprintf("SELECT cmd.cmd_id, cmd.timestamp "
 		 "FROM   cmd, crossref, args "
                  "WHERE  cmd.cmd_id = crossref.cmd_id "

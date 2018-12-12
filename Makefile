@@ -15,8 +15,10 @@ BINDIR ?= $$HOME/bin
 #                   %/_ wildcards  are used, then the comparison becomes 'LIKE'
 # 1.03 [KK 2017-10-04] Added db locked retries
 # 1.04 [KK 2017-10-04] BINDIR=... make install honors the bindir
+# 1.05 [KK 2018-07-16] Added support for $HISTIGNORE
+# 1.06 [KK 2018-07-16] Fixed environment variable handling
 
-VER    = '1.04'
+VER    = '1.06'
 AUTHOR = 'Karel Kubat <karel@kubat.nl>'
 YEARS  = '2017ff'
 URL    = 'https://github.com/KarelKubat/his'
@@ -44,6 +46,12 @@ install: his
 	@echo
 	@echo 'Installation successful, $(BINDIR)/his can be used'
 
+me:
+	@true
+a:
+	@true
+sandwich: install
+
 # Loadtest some random stuff
 loadtest: his
 	install -s his /tmp
@@ -58,7 +66,7 @@ upload: clean
 
 # Clean up
 clean:
-	rm -f his $(OBJ) usagetxt.h formatstxt.h createtablestxt.h readmetxt.h
+	rm -f his $(OBJ) usagetxt.h formatstxt.h createtablestxt.h
 
 # --------------------------------------------------------------------------
 # Helper rules
@@ -77,8 +85,6 @@ formatstxt.h: formatstxt.txt Makefile
 	perl txt2h.pl $< $@ FORMATSTEXT 1
 createtablestxt.h: createtablestxt.txt Makefile
 	perl txt2h.pl $< $@ CREATETABLESTEXT 0
-readmetxt.h: README.txt Makefile
-	perl txt2h.pl $< $@ READMETEXT 0
 
 # Extra deps, due to generated .h files from .txt and data instantiation
 main.o: main.c his.h
