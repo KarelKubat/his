@@ -17,8 +17,9 @@ BINDIR ?= $$HOME/bin
 # 1.04 [KK 2017-10-04] BINDIR=... make install honors the bindir
 # 1.05 [KK 2018-07-16] Added support for $HISTIGNORE
 # 1.06 [KK 2018-07-16] Fixed environment variable handling
+# 1.07 [KK 2019-03-05] --R / --report-missing-flags added
 
-VER    = '1.06'
+VER    = '1.07'
 AUTHOR = 'Karel Kubat <karel@kubat.nl>'
 YEARS  = '2017ff'
 URL    = 'https://github.com/KarelKubat/his'
@@ -32,7 +33,7 @@ OBJ    = $(SRC:.c=.o)
 
 # No-op target to show help
 foo:
-	@cat COMPILING.txt
+	@cat COMPILING.md
 	exit 1
 
 # Creates the binary 'his' in current directory
@@ -46,11 +47,7 @@ install: his
 	@echo
 	@echo 'Installation successful, $(BINDIR)/his can be used'
 
-me:
-	@true
-a:
-	@true
-sandwich: install
+me a sandwich: install
 
 # Loadtest some random stuff
 loadtest: his

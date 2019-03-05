@@ -51,17 +51,18 @@ typedef struct {
 #else
 #  define EXTERN extern
 #endif
-EXTERN int accept_his;         /* Also add cmds that start with 'his' */
-EXTERN int count;              /* Number of entries during recent listing */
-EXTERN char *db;               /* Database name */
-EXTERN sqlite3 *dbconn;        /* Database connection */
-EXTERN time_t first_timestamp; /* First timestamps when searching/dumping */
-EXTERN int insert_count;       /* #inserts in the db, 0 if no inserts in run */
-EXTERN time_t last_timestamp;  /* Last timestamps when searching/dumping */
-EXTERN int format;             /* Selected format */
-EXTERN int multiargs;          /* --add should expect multi-args */
-EXTERN int utc_time;           /* List or import timestamps are UTC */
-EXTERN int verbose;            /* Verbosity or not */
+EXTERN int accept_his;          /* Also add cmds that start with 'his' */
+EXTERN int count;               /* Number of entries during recent listing */
+EXTERN char *db;                /* Database name */
+EXTERN sqlite3 *dbconn;         /* Database connection */
+EXTERN time_t first_timestamp;  /* First timestamps when searching/dumping */
+EXTERN int format;              /* Selected format */
+EXTERN int insert_count;        /* #inserts in the db, 0 if no inserts in run */
+EXTERN time_t last_timestamp;   /* Last timestamps when searching/dumping */
+EXTERN int multiargs;           /* --add should expect multi-args */
+EXTERN int report_missing_args; /* show error msg when #args is bad */
+EXTERN int utc_time;            /* List or import timestamps are UTC */
+EXTERN int verbose;             /* Verbosity or not */
 
 /* Functions */
 extern void add(int ac, char **av);

@@ -1,8 +1,12 @@
 #include "his.h"
 
 static void check_ac(int ac, int required) {
-  if (ac < required)
-    error("there are not enough parameters, (at least) %d required", required);
+  if (ac < required) {
+    if (report_missing_args) 
+      error("there are not enough parameters, (at least) %d required",
+	    required);
+    exit(0);
+  }
 }
 
 static void parse_format_1(int ac, char **av, CmdToAdd *cmd) {

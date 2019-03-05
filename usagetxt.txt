@@ -27,19 +27,23 @@ his [--flags] -p,--purge
   given to avoid mistakenly removing everything.
 
 Supported general flags:
-  -d,--db=DB        : Sets Sqlite3 database path, default is $HOME/.his.db
-  -f,--first=STAMP  : Limits exports and searches to later or equal to STAMP,
-                      with STAMP having the format: YYYY-MM-DD/HH:MM:SS
-  -F,--format=FMT   : Sets the format for parsing during --add
-  -l,--last=STAMP   : Limits exports and searches to earlier or equal to STAMP
-  -L,--list-formats : Shows available parsing formats and stops
-  -m,--multi-args   : During --add, LINE is assumed to to have all args
-                      separately (as in ls -Flag). Default is all in one string
-                      (as in 'ls -Flag').
-  -u,--utc          : Timestamps in listed output or imported input are assumed
-                      UTC (default: local time)
-  -v,--verbose      : Increases verbosity
-  -h,-?,--help      : Shows this text and stops
-  --                : Stops parsing flags. Very useful in
-                        his --add -- $WHATEVER
-                      (when WHATEVER starts with a --flag)
+  -d,--db=DB                : Sets Sqlite3 database path, default is
+                              $HOME/.his.db
+  -f,--first=STAMP          : Limits exports and searches to later or equal to
+                              STAMP, with STAMP having the format:
+			      YYYY-MM-DD/HH:MM:SS
+  -F,--format=FMT           : Sets the format for parsing during --add
+  -l,--last=STAMP           : Limits exports and searches to earlier or equal
+                              to STAMP
+  -L,--list-formats         : Shows available parsing formats and stops
+  -m,--multi-args           : During --add, LINE is assumed to to have all args
+                            separately (as in ls -Flag). Default is all in one
+			    string (as in 'ls -Flag').
+  -R, --report_missing_args : Be verbose when #args is incorrect
+  -u,--utc                  : Timestamps in listed output or imported input are
+                             assumed UTC (default: local time)
+  -v,--verbose              : Increases verbosity
+  -h,-?,--help              : Shows this text and stops
+  --                        : Stops parsing flags. Very useful in
+                                his --add -- $WHATEVER
+                              (when WHATEVER starts with a --flag)

@@ -29,21 +29,22 @@ int main(int argc, char **argv) {
 
   /* Supported flags */
   struct option flags[] = {
-    { "accept-his",   0, 0, 'A' },
-    { "add",          0, 0, 'a' },
-    { "db",           1, 0, 'd' },
-    { "count",        1, 0, 'c' },
-    { "first",        1, 0, 'f' },
-    { "format",       1, 0, 'F' },
-    { "import",       0, 0, 'i' },
-    { "last",         1, 0, 'l' },
-    { "list-formats", 0, 0, 'L' },
-    { "multi-args",   0, 0, 'm' },
-    { "purge",        0, 0, 'p' },
-    { "utc",          0, 0, 'u' },
-    { "verbose",      0, 0, 'v' },
-    { "help",         0, 0, 'h' },
-    { 0,              0, 0,  0  },
+    { "accept-his",          0, 0, 'A' },
+    { "add",                 0, 0, 'a' },
+    { "db",                  1, 0, 'd' },
+    { "count",               1, 0, 'c' },
+    { "first",               1, 0, 'f' },
+    { "format",              1, 0, 'F' },
+    { "import",              0, 0, 'i' },
+    { "last",                1, 0, 'l' },
+    { "list-formats",        0, 0, 'L' },
+    { "multi-args",          0, 0, 'm' },
+    { "purge",               0, 0, 'p' },
+    { "report-missing-args", 0, 0, 'R' },
+    { "utc",                 0, 0, 'u' },
+    { "verbose",             0, 0, 'v' },
+    { "help",                0, 0, 'h' },
+    { 0,                     0, 0,  0  },
   };
   while ( (opt = getopt_long(argc, argv, "aAc:d:f:F:il:Lmpvuh?",
                              flags, 0)) > 0 ) {
@@ -120,6 +121,11 @@ int main(int argc, char **argv) {
         /* Purge stuff */
         action = PURGE;
         break;
+
+      case 'R':
+	/* Report missing args ON */
+	report_missing_args++;
+	break;
 
       case 'u':
         /* Import or export timestamps are UTC */
