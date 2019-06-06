@@ -53,9 +53,9 @@ static void list_by_timestamps() {
 
   /* Add countlimit if given */
   if (count) {
-      extra = xsprintf(" LIMIT %d", count);
-      sql = xstrcat(sql, extra);
-      free(extra);
+    extra = xsprintf(" LIMIT %d", count);
+    sql = xstrcat(sql, extra);
+    free(extra);
   }
 
   ctx = sqlnew(sql, 0);
@@ -86,7 +86,7 @@ static int compar(const void *a, const void *b) {
 
 /* The invocation was with args to find. */
 static void list_with_finding(int ac, char **av) {
-    char *full, *sql, *extra, *stamp, *stringop;
+  char *full, *sql, *extra, *stamp, *stringop;
   SqlCtx *ctx;
   int i, n, found;
   Result *res = 0;
@@ -96,36 +96,32 @@ static void list_with_finding(int ac, char **av) {
   msg("filtering for [%s]", full);
   free(full);
 
-  /* SQL string operator is '=' unless we have a % or _ in the given name. */
-  stringop = "=";
-  for (i = 0; i < ac; i++)
-      if (strchr(av[i], '%') || strchr(av[i], '_')) {
-	  stringop = "LIKE";
-	  break;
-      }
-
-  sql = xsprintf("SELECT cmd.cmd_id, cmd.timestamp "
-		 "FROM   cmd, crossref, args "
-                 "WHERE  cmd.cmd_id = crossref.cmd_id "
-		 "AND    crossref.args_id = args.args_id "
-		 "AND    args.arg %s ?", stringop);
-  if (first_timestamp) {
-    extra = xsprintf(" AND cmd.timestamp >= %d", first_timestamp);
-    sql = xstrcat(sql, extra);
-    free(extra);
-  }
-  if (last_timestamp) {
-    if (first_timestamp)
-      extra = xsprintf(" AND cmd.timestamp <= %d", last_timestamp);
-    sql = xstrcat(sql, extra);
-    free(extra);
-  }
-  sql = xstrcat(sql, " ORDER BY cmd.timestamp");
-
   for (i = 0; i < ac; i++) {
+    /* SQL string operator is '=' unless we have a % or _ in the given name. */
+    stringop = strchr(av[i], '%') || strchr(av[i], '_') ? "LIKE" : "=";
+
+    sql = xsprintf("SELECT cmd.cmd_id, cmd.timestamp "
+		   "FROM   cmd, crossref, args "
+		   "WHERE  cmd.cmd_id = crossref.cmd_id "
+		   "AND    crossref.args_id = args.args_id "
+		   "AND    args.arg %s ?", stringop);
+    if (first_timestamp) {
+      extra = xsprintf(" AND cmd.timestamp >= %d", first_timestamp);
+      sql = xstrcat(sql, extra);
+      free(extra);
+    }
+    if (last_timestamp) {
+      if (first_timestamp)
+        extra = xsprintf(" AND cmd.timestamp <= %d", last_timestamp);
+      sql = xstrcat(sql, extra);
+      free(extra);
+    }
+    sql = xstrcat(sql, " ORDER BY cmd.timestamp");
+
     msg("looking for [%s]", av[i]);
     ctx = sqlnew(sql, 1,
                  STR, av[i]);
+    free(sql);
     while (sqlrun(ctx) == SQLITE_ROW) {
       found = 0;
       for (n = 0; n < nres; n++)

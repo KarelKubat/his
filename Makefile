@@ -18,8 +18,9 @@ BINDIR ?= $$HOME/bin
 # 1.05 [KK 2018-07-16] Added support for $HISTIGNORE
 # 1.06 [KK 2018-07-16] Fixed environment variable handling
 # 1.07 [KK 2019-03-05] --R / --report-missing-flags added
+# 1.08 [KK 2019-06-06] Bugfix in wildcard searching
 
-VER    = '1.07'
+VER    = '1.08'
 AUTHOR = 'Karel Kubat <karel@kubat.nl>'
 YEARS  = '2017ff'
 URL    = 'https://github.com/KarelKubat/his'
