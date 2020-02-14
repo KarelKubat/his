@@ -22,9 +22,12 @@ void import_cmds() {
   char *buf;
 
   while ( (buf = get_stdin_line()) ) {
-    if (strlen(buf) < 19)
+    int len = strlen(buf);
+    if (!len)
+      continue;
+    if (len < 19)
       error("import line [%s] is not long enough for a timestamp", buf);
-    if (strlen(buf) < 21)
+    if (len < 21)
       error("import line [%s] is not long enough for a timestamp, space, "
             "and a command", buf);
     if (buf[19] != ' ')
