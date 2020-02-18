@@ -19,8 +19,12 @@ BINDIR ?= $$HOME/bin
 # 1.06 [KK 2018-07-16] Fixed environment variable handling
 # 1.07 [KK 2019-03-05] --R / --report-missing-flags added
 # 1.08 [KK 2019-06-06] Bugfix in wildcard searching
+# 1.09 [KK 2020-02-18] Bugfix in import_cmds (missing %s arg added). Modified
+#                      showing of cmds (show_commands()) to replace \n with
+#                      spaces to avoid import problems. Fixed minor typo in
+#                      the usage info.
 
-VER    = '1.08'
+VER    = '1.09'
 AUTHOR = 'Karel Kubat <karel@kubat.nl>'
 YEARS  = '2017ff'
 URL    = 'https://github.com/KarelKubat/his'

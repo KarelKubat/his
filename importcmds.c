@@ -21,6 +21,10 @@ static char *get_stdin_line() {
 void import_cmds() {
   char *buf;
 
+  // Entries are expected one per line, that's why showcmds.c flattens
+  // newlines into spaces. To make this better, we would need a separate
+  // exporter to properly encode newlines, and this importer to decode
+  // them correctly.
   while ( (buf = get_stdin_line()) ) {
     int len = strlen(buf);
     if (!len)
@@ -32,7 +36,7 @@ void import_cmds() {
             "and a command", buf);
     if (buf[19] != ' ')
       error("import line [%s] lacks space separator between timestamp "
-            "and command");
+            "and command", buf);
 
     add(1, &buf);
     free(buf);

@@ -204,3 +204,18 @@ and run the provided Perl script `import-bash-history.pl` as follows:
 ```shell
 perl import-bash-history.pl ~/.bash_history
 ```
+
+## Known Issues
+
+Shell commands with newlines in them get rendered with spaces instead of
+newlines. That means that if you type
+
+```shell
+echo "a
+b
+c"
+```
+
+then `his` will show this as `echo "a b c"`. There is currently no workaround,
+but fixes are welcome. (The replacement is in `showcommand.c`. When newlines
+are kept in the display, then importing breaks, see `importcmds.c`.)

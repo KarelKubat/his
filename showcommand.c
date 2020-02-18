@@ -1,7 +1,7 @@
 #include "his.h"
 
 void show_command(int cmd_id, int timestamp) {
-  char *line;
+  char *line, *cp;
   SqlCtx *ctx;
 
   line = timestamp2str(timestamp);
@@ -17,6 +17,11 @@ void show_command(int cmd_id, int timestamp) {
     line = xstrcat(line, sqlcolstring(ctx, 0));
   }
   sqlend(ctx);
+
+  // Newlines are suppressed in the output, else, --import breaks (see
+  // importcmds.c).
+  while ( (cp = strchr(line, '\n')) )
+    *cp = ' ';
 
   printf("%s\n", line);
   free(line);

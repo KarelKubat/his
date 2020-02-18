@@ -46,4 +46,4 @@ Supported general flags:
   -h,-?,--help              : Shows this text and stops
   --                        : Stops parsing flags. Very useful in
                                 his --add -- $WHATEVER
-                              (when WHATEVER starts with a --flag)
+                              (when $WHATEVER contains a --flag)
