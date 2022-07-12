@@ -12,7 +12,7 @@ typedef struct {
 static void list_all() {
   SqlCtx *ctx;
 
-  ctx = sqlnew("SELECT cmd_id, timestamp FROM cmd ORDER BY TIMESTAMP",
+  ctx = sqlnew("SELECT cmd_id, timestamp FROM cmd ORDER BY timestamp",
                0);
   while ( (sqlrun(ctx) == SQLITE_ROW) )
     show_command(sqlcolint(ctx, 0), sqlcolint(ctx, 1));
