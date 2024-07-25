@@ -24,7 +24,8 @@ his [--flags] -i,--import
 
 his [--flags] -p,--purge
   Remove entries from the database. Flags -f,--first and -l,--last must be
-  given to avoid mistakenly removing everything.
+  given to avoid mistakenly removing everything. To purge a single command,
+  look it up and supply its timestamp for both values of -f and -p.
 
 Supported general flags:
   -d,--db=DB                : Sets Sqlite3 database path, default is

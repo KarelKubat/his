@@ -52,8 +52,8 @@ void purge() {
     cmdctx = sqlnew("DELETE FROM cmd "
                     "WHERE cmd_id = ? AND timestamp = ?",
                     2,
-                    INT, cmd_id, INT,
-                    cmd_timestamp);
+                    INT, cmd_id, 
+                    INT, cmd_timestamp);
     sqlrun(cmdctx);
     sqlend(cmdctx);
 
@@ -73,7 +73,9 @@ void purge() {
   cmdctx = sqlnew("DELETE FROM cmd "
                   "WHERE  timestamp >= ? AND timestamp <=? "
                   "AND    cmd_id NOT IN (SELECT cmd_id FROM crossref)",
-                 first_timestamp, last_timestamp);
+                  2,
+                  INT, first_timestamp,
+                  INT, last_timestamp);
   sqlrun(cmdctx);
   sqlend(cmdctx);
 }

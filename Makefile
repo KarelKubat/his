@@ -9,10 +9,10 @@
 BINDIR ?= $$HOME/bin
 
 # Versioning.
-# 1.00 [2017-09-01] First version
-# 1.01 [2017-09-08] Bugfix in listcmd.c 
-# 1.02 [2017-09-10] SQL string comparison in listcmd.c defaults to '=' unless
-#                   %/_ wildcards  are used, then the comparison becomes 'LIKE'
+# 1.00 [KK 2017-09-01] First version
+# 1.01 [KK 2017-09-08] Bugfix in listcmd.c 
+# 1.02 [KK 2017-09-10] SQL string comparison in listcmd.c defaults to '=' unless
+#                      %/_ wildcards  are used, then the comparison becomes 'LIKE'
 # 1.03 [KK 2017-10-04] Added db locked retries
 # 1.04 [KK 2017-10-04] BINDIR=... make install honors the bindir
 # 1.05 [KK 2018-07-16] Added support for $HISTIGNORE
@@ -23,8 +23,9 @@ BINDIR ?= $$HOME/bin
 #                      showing of cmds (show_commands()) to replace \n with
 #                      spaces to avoid import problems. Fixed minor typo in
 #                      the usage info.
+# 1.10 [KK 2024-07-25] Usage text improvements, bugfix in -p (purge).
 
-VER    = '1.09'
+VER    = '1.10'
 AUTHOR = 'Karel Kubat <karel@kubat.nl>'
 YEARS  = '2017ff'
 URL    = 'https://github.com/KarelKubat/his'
