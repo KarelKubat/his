@@ -31,10 +31,11 @@ int main(int argc, char **argv) {
   struct option flags[] = {
     { "accept-his",          0, 0, 'A' },
     { "add",                 0, 0, 'a' },
-    { "db",                  1, 0, 'd' },
     { "count",               1, 0, 'c' },
+    { "db",                  1, 0, 'd' },
     { "first",               1, 0, 'f' },
     { "format",              1, 0, 'F' },
+    { "help",                0, 0, 'h' },
     { "import",              0, 0, 'i' },
     { "last",                1, 0, 'l' },
     { "list-formats",        0, 0, 'L' },
@@ -43,7 +44,6 @@ int main(int argc, char **argv) {
     { "report-missing-args", 0, 0, 'R' },
     { "utc",                 0, 0, 'u' },
     { "verbose",             0, 0, 'v' },
-    { "help",                0, 0, 'h' },
     { 0,                     0, 0,  0  },
   };
   while ( (opt = getopt_long(argc, argv, "aAc:d:f:F:il:Lmpvuh?",

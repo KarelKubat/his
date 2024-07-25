@@ -37,9 +37,9 @@ Supported general flags:
                               to STAMP
   -L,--list-formats         : Shows available parsing formats and stops
   -m,--multi-args           : During --add, LINE is assumed to to have all args
-                              separately (as in 'ls -F -l -a -g'). Default is
-                              all in one string (as in 'ls -Flag').
-  -R, --report_missing_args : Be verbose when #args is incorrect
+                              separately (as in ls -Flag, 2 args). Default is
+                              all in one string (as in 'ls -Flag', one arg).
+  -R,--report-missing-args  : Be verbose when #args is incorrect
   -u,--utc                  : Timestamps in listed output or imported input are
                               assumed UTC (default: local time)
   -v,--verbose              : Increases verbosity
